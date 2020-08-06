@@ -1,11 +1,10 @@
 #page-landing {
   width: 100vw;
   height: 100vh;
-
   display: flex;
   justify-content: center;
   align-items: center;
-
+  
   color: var(--color-text-in-primary);
   background-color: var(--color-primary);
 }
@@ -19,7 +18,7 @@
 .logo-container h2 {
   font-weight: 500;
   font-size: 2.4rem;
-  line-height: 4.6rem;
+  line-height: 3.4rem;
   margin-top: 0.8rem;
 }
 
@@ -92,15 +91,13 @@
   margin-right: 2.4rem;
 }
 
-@media (min-height: 730px) {
-  html,
-  body,
-  #root {
-    height: 100vh;
+@media (min-width: 490px) {
+  .hero-image {
+    height: 24rem;
   }
 }
 
-@media (min-width: 1100px) {
+@media (min-width: 740px) {
   #page-landing-content {
     max-width: 1100px;
 
@@ -109,7 +106,8 @@
     grid-template-columns: 2fr 1fr 1fr;
     grid-template-areas:
       "logo hero hero"
-      "buttons buttons total";
+      "buttons buttons buttons"
+      "total total total";
   }
 
   .logo-container {
@@ -131,7 +129,8 @@
 
   .hero-image {
     grid-area: hero;
-    justify-self: end;
+    justify-self: center;
+    align-self: center;
   }
 
   .buttons-container {
@@ -141,6 +140,20 @@
 
   .buttons-container a {
     font-size: 2.4rem;
+  }
+
+  .total-connections {
+    grid-area: total;
+    justify-self: center;
+  }
+  
+}
+
+@media (min-width: 940px) {
+  #page-landing-content {
+    grid-template-areas:
+      "logo hero hero"
+      "buttons buttons total";
   }
 
   .total-connections {

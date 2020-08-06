@@ -1,42 +1,64 @@
 import React from "react";
+import { Teacher } from "../../Utils/interfaces";
+
+import api from "../../services/api";
 
 import whatsappIcon from '../../assets/images/icons/whatsapp.svg';
 
 import './styles.css';
 
-const TeacherItem = () => {
+interface TeacherItemProps {
+  teacher: Teacher;
+}
+
+const TeacherItem:React.FC<TeacherItemProps> = ({ teacher }) => {
+  const {
+    avatar,
+    bio,
+    cost,
+    name,
+    subject,
+    whatsapp,
+    id,
+  } = teacher;
+
+  const createNewConnection = () => {
+    api.post('connections', {
+      user_id: id,
+    });
+  }
+
   return (
     <article className="teacher-item">
       <header>
         <img
-          src="https://avatars0.githubusercontent.com/u/62628261?s=460&u=8e53dd470fb29af34da48cbb698284eb3cf19032&v=4"
+          src={avatar}
           alt="Professor"
         />
         <div>
-          <strong>Fernando Machado</strong>
-          <span>Matemática</span>
+          <strong>{name}</strong>
+          <span>{subject}</span>
         </div>
       </header>
 
       <p>
-        As vezes não sei nem onde eu tô, mas consigo me localizar facilmente em
-        qualquer lugar. Tenho memória fotográfica e nunca fico perdido.
-        <br />
-        Eu ensino a galera como não ser perder em matemática, com lições
-        práticas e simples para você nunca precisar proucuar um tutorial no
-        youtube.
+        {bio}
       </p>
 
       <footer>
         <p>
           Preço/hora
-          <strong>R$ 20,00</strong>
+          <strong>R${cost},00</strong>
         </p>
 
-        <button type="button">
+        <a
+        target="_blank"
+        onClick={createNewConnection}
+        href={`https://wa.me/${whatsapp}`} 
+        >
           <img src={whatsappIcon} alt="Whatsapp" />
           Entre em contato
-        </button>
+        </a>
       </footer>
     </article>
   );

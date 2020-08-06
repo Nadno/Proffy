@@ -42,6 +42,14 @@
   color: var(--color-title-in-primary);
 }
 
+.page-header .header-content p {
+  max-width: 30rem;
+  font-size: 1.6rem;
+  line-height: 2.6rem;
+  color: var(--color-text-in-primary);
+  margin-top: 2.4rem;
+}
+
 #page-teacher-list main {
   margin: 3.2rem auto;
   width: 90%;
@@ -49,7 +57,7 @@
 
 @media (min-width: 700px) {
   .page-header {
-    height: 240px;
+    height: 340px;
   }
 
   .page-header .top-bar-container {
