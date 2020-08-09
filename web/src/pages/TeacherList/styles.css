@@ -38,6 +38,11 @@
   width: 90%;
 }
 
+#page-teacher-list footer {
+  display: flex;
+  flex-direction: column;
+}
+
 @media (min-width: 700px) {
   #page-teacher-list {
     max-width: 100%;
@@ -61,5 +66,9 @@
     padding: 3.2rem 0;
     max-width: 740px;
     margin: 0 auto;
+  }
+
+  #page-teacher-list footer {
+    flex-direction: row;
   }
 }

@@ -29,11 +29,12 @@ const TeacherItem: React.FC<TeacherItemProps> = ({ teacher, isFavorite }) => {
 
     if (heart.isFavorite) {
       favorites.splice(ids.indexOf(id), 1);
+      
       setHeart({
         isFavorite: false,
         svg: initialHeartIcon,
       });
-      console.log(favorites);
+
       saveStorage(favorites);
       return 0;
     }
