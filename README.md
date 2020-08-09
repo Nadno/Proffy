@@ -13,6 +13,6 @@
 <br/>
 <h1 align="center"><img src="listagem.png"></h1>
 <br/>
-<p>Também é possível favoritar ou desfavoritar uma aula, salvando localmente as informações.</p>
+<p>Também é possível favoritar ou desfavoritar uma aula, salvando localmente as informações. Selecionado os favoritos, o botão de busca é desativado.</p>
 <br/>
 <h1 align="center"><img src="fav.png"></h1>
