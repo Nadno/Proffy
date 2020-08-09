@@ -7,11 +7,13 @@ import Input from "../../components/Input";
 import Select from "../../components/Select";
 
 import api from "../../services/api";
+import getSave, { getIds } from "../../Utils/storage";
 
 import "./styles.css";
 
 const TeacherList = () => {
   const [teachers, setTeachers] = useState([]);
+  const [buttonDisabled, setButtonDisabled] = useState(false);
 
   const [subject, setSubject] = useState("");
   const [week_day, setWeek_day] = useState("");
@@ -29,16 +31,36 @@ const TeacherList = () => {
     setTeachers(response.data);
   };
 
+  const searchFavoriteOnStorage = (id:number) => {
+    const favorites = getIds();
+
+    return  favorites.indexOf(id) >= 0 ? true : false;
+  };
+
+  const subjectFilter = (value:string) => {
+    if(value === "Favoritos") {
+      setButtonDisabled(true);
+      setSubject(value);
+      
+      const favorites = getSave();
+      setTeachers(favorites);
+      return 0;
+    };
+    setButtonDisabled(false);
+    setSubject(value);
+  };
+
   return (
     <div id="page-teacher-list" className="container">
       <PageHeader title="Estes são os proffys disponíveis.">
         <form id="search-teachers" onSubmit={searchTeacher}>
           <Select
             name="subject"
-            label="Matéria"
+            label="Matéria/Favoritos"
             value={subject}
-            onChange={(e) => setSubject(e.target.value)}
+            onChange={(e) => subjectFilter(e.target.value)}
             options={[
+              { value: "Favoritos", label: "Favoritos" },
               { value: "Artes", label: "Artes" },
               { value: "Biologia", label: "Biologia" },
               { value: "Ciências", label: "Ciências" },
@@ -73,7 +95,7 @@ const TeacherList = () => {
             onChange={(e) => setTime(e.target.value)}
           />
 
-          <button type="submit">
+          <button type="submit" disabled={buttonDisabled}>
             Buscar
           </button>
         </form>
@@ -81,7 +103,7 @@ const TeacherList = () => {
 
       <main>
         {teachers.map((teacher: Teacher) => {
-          return <TeacherItem key={teacher.id} teacher={teacher}/>;
+          return <TeacherItem key={teacher.id} teacher={teacher} isFavorite={searchFavoriteOnStorage(teacher.id)} />;
         })}
       </main>
     </div>

@@ -29,6 +29,10 @@
   background-color: var(--color-secundary-dark);
 }
 
+#search-teachers button:disabled {
+  background-color: gray;
+}
+
 #page-teacher-list main {
   margin: 3.2rem auto;
   width: 90%;

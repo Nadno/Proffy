@@ -50,13 +50,33 @@
   justify-content: space-between;
 }
 
-.teacher-item footer p strong {
+.teacher-item footer  p strong {
   color: var(--color-primary);
   font-size: 1.6rem;
   display: block;
 }
 
-.teacher-item footer a {
+.buttons-container .fav {
+  width: 5.2rem;
+  border: 0;
+  border-radius: 0.6rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 0.6rem;
+  background-color: var(--color-primary);
+  cursor: pointer;
+}
+
+.buttons-container .fav img {
+  height: 80%;
+}
+
+.buttons-container .fav:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.teacher-item footer .buttons-container a {
   width: 20rem;
   height: 5.6rem;
   background-color: var(--color-secundary);
@@ -72,7 +92,7 @@
   transition: 0.2s;
 }
 
-.teacher-item footer a:hover {
+.teacher-item footer .buttons-container a:hover {
   background-color: var(--color-secundary-dark);
 }
 
@@ -91,13 +111,13 @@
     margin-left: 1.6rem;
   }
 
-  .teacher-item footer a {
+  .teacher-item footer .buttons-container a {
     width: 24.5rem;
     font-size: 1.6rem;
     justify-content: center;
   }
 
-  .teacher-item footer a img {
+  .teacher-item footer .buttons-container a img {
     margin-right: 1.6rem;
   }
 }
