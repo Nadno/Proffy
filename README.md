@@ -9,7 +9,7 @@
 <h1 align="center"><img src="mobile.png"></h1>
 
 <h2>Professores</h2>
-<p>Professores podem criar aulas, com dias, horários e matéria definidos. Que será exibido aos demais usuários que acessarem a página de listagem de aulas.</p>
+<p>Professores podem criar aulas, com dias, horários e matéria definidos. Que será exibido aos demais usuários que acessarem a página de listagem de aulas. Onde as aulas são filtradas por matéria, dia, e hora.</p>
 <br/>
 <h1 align="center"><img src="listagem.png"></h1>
 <br/>
