@@ -1,0 +1,135 @@
+#page-signin {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#page-signin-content {
+  width: 100vw;
+  height: 100vh;
+}
+
+#page-signin .logo-container {
+  position: relative;
+  height: 350px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  padding: 6rem;
+  margin-top: 0;
+  background-image: url(../../assets/images/success-background.svg);
+  background-repeat: repeat;
+  background-position: 200px;
+  background-color: var(--color-primary);
+}
+
+#page-signin .logo-container > a {
+  position: absolute;
+  width: 5rem;
+  top: 0.1rem;
+  left: 2rem;
+}
+
+#page-signin .logo-container > a img {
+  width: 100%;
+}
+
+#page-signin .logo-container > img {
+  width: 18rem;
+  height: 5rem;
+}
+
+#page-signin .logo-container h2 {
+  font-size: 1.8rem;
+  line-height: 2rem;
+  text-align: left;
+  color: var(--color-line-in-white);
+}
+
+#page-signin .form-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#page-signin form {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 3.4rem;
+}
+
+#page-signin form fieldset {
+    width: 100%;
+    border: none;
+    margin-bottom: 1rem;
+}
+
+
+#page-signin form fieldset legend {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.4rem;
+}
+
+#page-signin form fieldset h1 {
+    font-size: 2.2rem;
+    color: var(--color-text-title);
+}
+
+#page-signin form fieldset a {
+    font-size: 1.4rem;
+    text-decoration: none;
+    color: var(--color-primary);
+}
+
+#page-signin form button {
+    width: 100%;
+    height: 5rem;
+    border: none;
+    color: var(--color-button-text);
+    background-color: var(--color-secundary);
+}
+
+@media (min-width: 740px) {
+  #page-signin-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "logo form";
+  }
+
+  #paga-signin .form-container {
+    height: 100%;
+  }
+
+  #page-signin form {
+    width: 90%;
+}
+
+  #page-signin .logo-container {
+    height: 100%;
+    grid-area: logo;
+  }
+
+  #page-signin .logo-container img {
+    width: 24rem;
+    height: 8rem;
+  }
+
+  #page-signin .logo-container h2 {
+    font-size: 2rem;
+    line-height: 2rem;
+  }
+  
+
+  #page-signin .form-container {
+    grid-area: form;
+  }
+}

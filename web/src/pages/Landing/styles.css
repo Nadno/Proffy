@@ -91,6 +91,15 @@
   margin-right: 2.4rem;
 }
 
+.sign {
+  display: flex;
+  justify-content: space-between;
+}
+
+.sign a {
+  color: #fff;
+}
+
 @media (min-width: 490px) {
   .hero-image {
     height: 24rem;

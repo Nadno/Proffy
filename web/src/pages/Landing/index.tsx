@@ -15,11 +15,11 @@ import "./styles.css";
 const Landing = () => {
   const [totalConnections, setTotalConnections] = useState(0);
 
-  useEffect(() => {
-    api
-      .get("/connections")
-      .then((response) => setTotalConnections(response.data.total));
-  }, []);
+  //useEffect(() => {
+  //  api
+  //    .get("/connections")
+  //    .then((response) => setTotalConnections(response.data.total));
+  //}, []);
 
   return (
     <div id="page-landing">
@@ -51,6 +51,14 @@ const Landing = () => {
           Total de {totalConnections} conexões já realizadas
           <img src={purpleHeartIcon} alt="Coração roxo" />
         </span>
+        <div className="sign">
+          <Link to="/signin">
+            Faça seu login!
+          </Link>
+          <Link to="/signup">
+            Cadastre-se
+          </Link>
+        </div>
       </div>
     </div>
   );
