@@ -42,20 +42,13 @@ export default class ClassesController {
   }
 
   async create(req: Request, res: Response) {
-    const { name, avatar, whatsapp, bio, subject, cost, schedule } = req.body;
+    const { subject, cost, schedule, user_id } = req.body;
 
     const trx = await db.transaction();
-
     try {
-      const insertedUsersIds = await trx("users").insert({
-        name,
-        avatar,
-        whatsapp,
-        bio,
-      });
-
-      const user_id = insertedUsersIds[0];
-
+      const user = await trx("users")
+        .select("*")
+        .where("users.id", "=", user_id);
       const insertedClassesIds = await trx("classes").insert({
         subject,
         cost,
@@ -76,7 +69,7 @@ export default class ClassesController {
       await trx("class_schedule").insert(classSchedule);
       await trx.commit();
 
-      return res.status(201).send();
+      return res.json({ user });
     } catch (err) {
       await trx.rollback();
 
