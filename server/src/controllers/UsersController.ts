@@ -8,57 +8,79 @@ export default class UsersController {
     const { email, password, name, avatar, whatsapp, bio } = req.body;
 
     const hash = bcrypt.hashSync(password, 10);
-    const trx = await db.transaction();
 
-    try {
-      const emailAlredyExists = await trx("users")
-        .select("users.email")
-        .where("users.email", "=", email);
+    const emailAlredyExists = await db("users")
+      .select("users.email")
+      .where("users.email", "=", email);
 
-      if (emailAlredyExists)
-        return res.status(400).json("Esse email já está cadastrado!");
-
-      const insertedUsersIds = await trx("users").insert({
-        email,
-        password: hash,
-        name,
-        avatar,
-        whatsapp,
-        bio,
-      });
-
-      const user_id = insertedUsersIds[0];
-      trx.commit();
-
-      return res.json({ message: user_id });
-    } catch (err) {
-      console.log(err);
+    if (emailAlredyExists.length > 0) {
+      return res.status(400).json("Esse email já está cadastrado!");
     }
+
+    const insertedUsersIds = await db("users").insert({
+      email,
+      password: hash,
+      name,
+      avatar,
+      whatsapp,
+      bio,
+    });
+
+    const user_id = insertedUsersIds[0];
+
+    return res.json({ message: user_id });
   }
 
   async index(req: Request, res: Response) {
+    const { id } = req.params;
+
+    const user = await db("users")
+      .select("name", "avatar", "whatsapp", "bio")
+      .where("users.id", "=", id);
+    if (user.length === 0) return res.json("Este usuário não existe!");
+
+    return res.json(user);
+  }
+
+  async signIn(req: Request, res: Response) {
     const { email, password } = req.body;
 
-    const trx = await db.transaction();
+    const dbPassword = await db("users")
+      .select("password")
+      .where("email", "=", email);
+
+    const match = bcrypt.compareSync(password, dbPassword[0].password);
+
+    if (!match) return res.status(400).json({ message: "Senha inválida!" });
+
+    const user = await db("users").select("*").where("email", "=", email);
+
+    return res.json({
+      message: "Succes signin!",
+      user: user[0],
+    });
+  }
+
+  async update(req: Request, res: Response) {
+    const { email, password, avatar, whatsapp, name, bio } = req.body;
+
+    const dbPassword = await db("users")
+      .select("password")
+      .where("users.email", "=", email);
+    const match = bcrypt.compareSync(password, dbPassword[0].password);
+    if (!match) return res.status(400).json({ message: "Senha inválida!" });
 
     try {
-      const dbPassword = await trx("users")
-        .select("password")
-        .where("email", "=", email)
-        .from("users");
-
-      const match = bcrypt.compareSync(password, dbPassword[0].password);
-
-      if (!match) return res.status(400).json({ message: "Senha inválida!" });
-
-      const user = await trx("users").select("*").where("email", "=", email);
-
-      return res.json({
-        message: "Succes signin!",
-        user: user[0],
+      await db("users").where("users.email", "=", email).update({
+        avatar,
+        whatsapp,
+        name,
+        bio,
       });
+
+      return res.json("Dados atualizados com sucesso!");
     } catch (err) {
-      return res.json({ messsage: err });
-    }
+      return res.json("Não foi possível atualizar seus dados!");
+    };
   }
 }

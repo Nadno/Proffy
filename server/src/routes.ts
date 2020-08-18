@@ -10,8 +10,10 @@ const usersControllers = new UsersControllers();
 const classesControllers = new ClassesController();
 const connectionsControllers = new ConnectionsController();
 
-routes.post("/sign-up", usersControllers.create);
-routes.post("/sign-in", usersControllers.index);
+routes.post("/users/sign-up", usersControllers.create);
+routes.post("/users/sign-in", usersControllers.signIn);
+routes.post("/users/update", usersControllers.update);
+routes.get("/users/:id", usersControllers.index);
 
 routes.get("/classes", classesControllers.index);
 routes.post("/classes", classesControllers.create);

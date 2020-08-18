@@ -11,7 +11,10 @@ export interface ScheduleItem {
 
 export default class ClassesController {
   async index(req: Request, res: Response) {
+    const { page = 1 } = req.query;
     const filters = req.query;
+
+    const [count] = await db("classes").count();
 
     const week_day = filters.week_day as string;
     const subject = filters.subject as string;
@@ -36,7 +39,11 @@ export default class ClassesController {
       })
       .where("classes.subject", "=", subject)
       .join("users", "classes.user_id", "=", "users.id")
+      .limit(5)
+      .offset((Number(page) - 1) * 5)
       .select(["classes.*", "users.*"]);
+
+    res.header("X-total-Count", count["count(*)"]);
 
     return res.json(classes);
   }
@@ -44,38 +51,26 @@ export default class ClassesController {
   async create(req: Request, res: Response) {
     const { subject, cost, schedule, user_id } = req.body;
 
-    const trx = await db.transaction();
-    try {
-      const user = await trx("users")
-        .select("*")
-        .where("users.id", "=", user_id);
-      const insertedClassesIds = await trx("classes").insert({
-        subject,
-        cost,
-        user_id,
-      });
+    const user = await db("users").select("*").where("users.id", "=", user_id);
+    const insertedClassesIds = await db("classes").insert({
+      subject,
+      cost,
+      user_id,
+    });
 
-      const class_id = insertedClassesIds[0];
+    const class_id = insertedClassesIds[0];
 
-      const classSchedule = schedule.map((scheduleItem: ScheduleItem) => {
-        return {
-          class_id,
-          week_day: scheduleItem.week_day,
-          from: convertHourToMinutes(scheduleItem.from),
-          to: convertHourToMinutes(scheduleItem.to),
-        };
-      });
+    const classSchedule = schedule.map((scheduleItem: ScheduleItem) => {
+      return {
+        class_id,
+        week_day: scheduleItem.week_day,
+        from: convertHourToMinutes(scheduleItem.from),
+        to: convertHourToMinutes(scheduleItem.to),
+      };
+    });
 
-      await trx("class_schedule").insert(classSchedule);
-      await trx.commit();
+    await db("class_schedule").insert(classSchedule);
 
-      return res.json({ user });
-    } catch (err) {
-      await trx.rollback();
-
-      return res.status(400).json({
-        error: `Unexpected error while creating new class: ${err}`,
-      });
-    }
+    return res.json({ user });
   }
 }
