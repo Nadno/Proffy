@@ -49,7 +49,9 @@ export default class UsersController {
     const refreshToken = generateRefreshJwt({ id: account.id , version: account.jwtVersion })
 
     return res.json({ 
-      account
+      account,
+      token,
+      refreshToken
     });
   }
 
