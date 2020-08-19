@@ -1,4 +1,4 @@
-import express, { response } from "express";
+import express from "express";
 
 import UsersControllers from './controllers/UsersController';
 import ClassesController from "./controllers/ClassesControllers";
@@ -14,6 +14,7 @@ routes.post("/users/sign-up", usersControllers.create);
 routes.post("/users/sign-in", usersControllers.signIn);
 routes.post("/users/update", usersControllers.update);
 routes.get("/users/:id", usersControllers.index);
+routes.post("/refresh", usersControllers.resfresh);
 
 routes.get("/classes", classesControllers.index);
 routes.post("/classes", classesControllers.create);

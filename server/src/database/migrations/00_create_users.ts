@@ -9,6 +9,7 @@ export async function up(knex: Knex) {
     table.string("avatar").notNullable();
     table.string("whatsapp");
     table.string("bio");
+    table.integer("jwtVersion").defaultTo(0).notNullable();
   });
 }
 
