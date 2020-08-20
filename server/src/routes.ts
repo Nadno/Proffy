@@ -15,7 +15,7 @@ const connectionsControllers = new ConnectionsController();
 routes.post("/users/sign-up", accountSingUp, usersControllers.create);
 
 routes.post("/users/sign-in", accountSingIn, usersControllers.signIn);
-routes.post("/users/update", usersControllers.update);
+routes.put("/users/update", usersControllers.update);
 routes.get("/users/:id", usersControllers.index);
 routes.post("/refresh", usersControllers.resfresh);
 
