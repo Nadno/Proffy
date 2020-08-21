@@ -1,5 +1,9 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useContext, FormEvent } from "react";
+import { Link, useHistory } from "react-router-dom";
+
+import { AxiosResponse } from "axios";
+import { apiPost } from "../../services/api";
+import { Context } from '../../store';
 
 import Input from "../../components/Input";
 
@@ -9,6 +13,32 @@ import backIcon from "../../assets/images/icons/back.svg";
 import "./styles.css";
 
 const SignIn = () => {
+  const AuthProvider = useContext(Context);
+  const history = useHistory();
+
+  const [account, setAccount] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (value: string, name: string) => {
+    setAccount({
+      ...account,
+      [name]: value,
+    });
+  };
+
+  const dataDetructing = (res: AxiosResponse) => {
+    AuthProvider?.handleLogin(res.data);
+    history.push("/study");
+  };
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    apiPost('/users/sign-in', account)
+    .then(dataDetructing);
+  };
+
   return (
     <div id="page-signin">
       <div id="page-signin-content">
@@ -21,14 +51,26 @@ const SignIn = () => {
         </div>
 
         <div className="form-container">
-          <form>
+          <form onSubmit={handleSubmit}>
             <fieldset>
               <legend>
                 <h1>Fazer login</h1>
                 <Link to="/signup">Criar uma conta</Link>
               </legend>
-              <Input label="E-mail" name="email" type="email" />
-              <Input label="Senha" name="password" type="password" />
+              <Input 
+                label="E-mail"
+                name="email"
+                type="email"
+                value={account.email}
+                onChange={(e) => handleChange(e.target.value, e.target.id)}
+              />
+              <Input
+                label="Senha"
+                name="password"
+                type="password"
+                value={account.password}
+                onChange={(e) => handleChange(e.target.value, e.target.id)}
+              />
             </fieldset>
 
             <fieldset>

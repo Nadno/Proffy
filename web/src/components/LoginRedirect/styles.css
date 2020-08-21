@@ -1,0 +1,34 @@
+#redirect {
+  position: absolute;
+
+  z-index: 10;
+  transform: translate(-50%, -50%);
+  top: 50%;
+}
+
+#redirect .buttons {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+#redirect .buttons button {
+  width: 40%;
+  height: 5.6rem;
+  background-color: var(--color-secundary);
+  color: var(--color-button-text);
+  border: 0;
+  border-radius: 0.8rem;
+  cursor: pointer;
+  font: 700 1.6rem Archivo;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: background-color 0.2s;
+  margin-top: 3.2rem;
+}
+
+#redirect .buttons button:hover {
+  background-color: var(--color-secundary-dark);
+}

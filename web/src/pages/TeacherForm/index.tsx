@@ -1,5 +1,7 @@
-import React, { useState, FormEvent } from "react";
+import React, { useState, FormEvent, useContext } from "react";
 import { useHistory } from "react-router-dom";
+
+import { Context } from "../../store";
 
 import PageHeader from "../../components/PageHeader";
 import Input from "../../components/Input";
@@ -11,8 +13,10 @@ import warningIcon from "../../assets/images/icons/warning.svg";
 import api from "../../services/api";
 
 import "./styles.css";
+import LoginRedirect from "../../components/LoginRedirect";
 
 const TeacherForm = () => {
+  const AuthProvider = useContext(Context);
   const history = useHistory();
 
   const [name, setName] = useState("");
@@ -79,6 +83,8 @@ const TeacherForm = () => {
       
   };
 
+  if (!AuthProvider?.user?.token) return <LoginRedirect />;
+
   return (
     <div id="page-teacher-form" className="container">
       <PageHeader
@@ -88,7 +94,7 @@ const TeacherForm = () => {
 
       <main>
         <form onSubmit={handleCreateClass}>
-          <fieldset>
+          {/* <fieldset>
             <legend>Seus dados</legend>
             <Input
               name="name"
@@ -117,7 +123,7 @@ const TeacherForm = () => {
               value={bio}
               onChange={(e) => setBio(e.target.value)}
             />
-          </fieldset>
+          </fieldset> */}
           <fieldset>
             <legend>Sobre a aula</legend>
             <Select

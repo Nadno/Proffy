@@ -1,4 +1,29 @@
+import Cookies, { Cookie, CookieSetOptions, CookieGetOptions } from 'universal-cookie';
 import { Teacher } from "./interfaces";
+
+const cookie = new Cookies();
+
+const defaultOptions = {
+  path: '/',
+};
+
+export const getCookie = (name: string, options:CookieGetOptions = {} ) => {
+  if(!name) return null;
+
+  return cookie.get(name, { ...defaultOptions, ...options });
+}
+
+export const setCookie = (name: string, value: Cookie, options:CookieSetOptions = {} ) => {
+  if(!name || value === undefined) return null;
+
+  return cookie.set(name, { ...defaultOptions, ...options });
+}
+
+export const removeCookie = (name: string, options:CookieSetOptions = {} ) => {
+  if(!name) return null;
+
+  return cookie.remove(name, { ...defaultOptions, ...options });
+}
 
 const getSave = () => {
   let favorites = localStorage.getItem("favorites");
