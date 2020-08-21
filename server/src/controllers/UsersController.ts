@@ -119,7 +119,7 @@ export default class UsersController {
 
   async resfresh(req: Request, res: Response) {
     const token = String(getTokenFromHeaders(req.headers));
-    console.log("***Token:", token);
+
     if (!token) return res.status(401).send("Token invalido!");
 
     try {

@@ -1,4 +1,4 @@
-import React, { useState, FormEvent } from "react";
+import React, { useState, FormEvent, useEffect } from "react";
 import { Teacher } from "../../Utils/interfaces";
 
 import PageHeader from "../../components/PageHeader";
@@ -6,12 +6,15 @@ import TeacherItem from "../../components/TeacherItem";
 import Input from "../../components/Input";
 import Select from "../../components/Select";
 
-import api from "../../services/api";
+import { apiGet } from "../../services/api";
 import getSave, { getIds } from "../../Utils/storage";
 
 import "./styles.css";
+import Pagination from "../../components/Pagination";
 
 const TeacherList = () => {
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
   const [teachers, setTeachers] = useState([]);
   const [buttonDisabled, setButtonDisabled] = useState(false);
 
@@ -19,33 +22,39 @@ const TeacherList = () => {
   const [week_day, setWeek_day] = useState("");
   const [time, setTime] = useState("");
 
-  const searchTeacher = async (e:FormEvent) => {
+  useEffect(() => console.log(page), [page]);
+
+  const searchTeacher = async (e: FormEvent) => {
     e.preventDefault();
     const params = {
       subject,
       week_day,
       time,
+      page,
     };
-    const response = await api.get('classes', { params });
 
-    setTeachers(response.data);
+    const { data } = await apiGet("/classes", params);
+    if (data.classes) setTeachers(data.classes);
+    if (data.count) {
+      setTotalPages(data.count / 5);
+    }
   };
 
-  const searchFavoriteOnStorage = (id:number) => {
+  const searchFavoriteOnStorage = (id: number) => {
     const favorites = getIds();
 
-    return  favorites.indexOf(id) >= 0 ? true : false;
+    return favorites.indexOf(id) >= 0 ? true : false;
   };
 
-  const subjectFilter = (value:string) => {
-    if(value === "Favoritos") {
+  const subjectFilter = (value: string) => {
+    if (value === "Favoritos") {
       setButtonDisabled(true);
       setSubject(value);
-      
+
       const favorites = getSave();
       setTeachers(favorites);
       return 0;
-    };
+    }
     setButtonDisabled(false);
     setSubject(value);
   };
@@ -102,9 +111,20 @@ const TeacherList = () => {
       </PageHeader>
 
       <main>
-        {teachers.map((teacher: Teacher) => {
-          return <TeacherItem key={teacher.id} teacher={teacher} isFavorite={searchFavoriteOnStorage(teacher.id)} />;
-        })}
+        {teachers.length >= 1 ? (
+          <>
+            {teachers.map((teacher: Teacher) => {
+              return (
+                <TeacherItem
+                  key={teacher.id}
+                  teacher={teacher}
+                  isFavorite={searchFavoriteOnStorage(teacher.id)}
+                />
+              );
+            })}
+            <Pagination page={page} totalPages={totalPages} setPage={setPage} />
+          </>
+        ) : null}
       </main>
     </div>
   );

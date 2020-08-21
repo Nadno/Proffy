@@ -3,20 +3,22 @@ import { Teacher } from "./interfaces";
 
 const cookie = new Cookies();
 
+const FAVOTIRES_STORAGE = "favorites";
+
 const defaultOptions = {
   path: '/',
 };
 
 export const getCookie = (name: string, options:CookieGetOptions = {} ) => {
   if(!name) return null;
-
+  
   return cookie.get(name, { ...defaultOptions, ...options });
 }
 
 export const setCookie = (name: string, value: Cookie, options:CookieSetOptions = {} ) => {
   if(!name || value === undefined) return null;
 
-  return cookie.set(name, { ...defaultOptions, ...options });
+  return cookie.set(name, value, { ...defaultOptions, ...options });
 }
 
 export const removeCookie = (name: string, options:CookieSetOptions = {} ) => {
@@ -26,13 +28,13 @@ export const removeCookie = (name: string, options:CookieSetOptions = {} ) => {
 }
 
 const getSave = () => {
-  let favorites = localStorage.getItem("favorites");
+  let favorites = localStorage.getItem(FAVOTIRES_STORAGE);
 
   if(favorites) {
     const save = parseJson(favorites);
     return save;
   } else {
-    localStorage.setItem("favorites", "[]");
+    localStorage.setItem(FAVOTIRES_STORAGE, "[]");
     return [];
   };
 };
@@ -40,7 +42,7 @@ const getSave = () => {
 export const saveStorage = (favorites: Array<object>) => {
   try {
     const save = JSON.stringify(favorites);
-    localStorage.setItem("favorites", save);
+    localStorage.setItem(FAVOTIRES_STORAGE, save);
   } catch (err) {
     return err;
   }

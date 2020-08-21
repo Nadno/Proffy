@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import db from "../database/connection";
 
 import convertHourToMinutes from "../Utils/convertHourToMinutes";
+import { QueryBuilder } from "knex";
 
 export interface ScheduleItem {
   week_day: number;
@@ -13,8 +14,6 @@ export default class ClassesController {
   async index(req: Request, res: Response) {
     const { page = 1 } = req.query;
     const filters = req.query;
-
-    const [count] = await db("classes").count();
 
     const week_day = filters.week_day as string;
     const subject = filters.subject as string;
@@ -28,30 +27,45 @@ export default class ClassesController {
 
     const timeInMinutes = convertHourToMinutes(time);
 
+    function ClassSchedule(this: QueryBuilder) {
+      this.select("class_schedule.*")
+        .from("class_schedule")
+        .whereRaw("`class_schedule`.`class_id` = `classes`.`id`")
+        .whereRaw("`class_schedule`.`week_day` = ??", [Number(week_day)])
+        .whereRaw("`class_schedule`.`from` <= ??", [timeInMinutes])
+        .whereRaw("`class_schedule`.`to` > ??", [timeInMinutes]);
+    };
+
+    const [count] = await db("classes")
+      .whereExists(ClassSchedule)
+      .where("classes.subject", "=", subject)
+      .join("users", "classes.user_id", "=", "users.id")
+      .count();
     const classes = await db("classes")
-      .whereExists(function () {
-        this.select("class_schedule.*")
-          .from("class_schedule")
-          .whereRaw("`class_schedule`.`class_id` = `classes`.`id`")
-          .whereRaw("`class_schedule`.`week_day` = ??", [Number(week_day)])
-          .whereRaw("`class_schedule`.`from` <= ??", [timeInMinutes])
-          .whereRaw("`class_schedule`.`to` > ??", [timeInMinutes]);
-      })
+      .whereExists(ClassSchedule)
       .where("classes.subject", "=", subject)
       .join("users", "classes.user_id", "=", "users.id")
       .limit(5)
       .offset((Number(page) - 1) * 5)
-      .select(["classes.*", "users.*"]);
+      .select(
+        "users.name",
+        "users.email",
+        "users.avatar",
+        "users.whatsapp",
+        "users.bio",
+        "users.jwtVersion",
+        "classes.*"
+      );
 
-    res.header("X-total-Count", count["count(*)"]);
-
-    return res.json(classes);
+    return res.json({
+      classes,
+      count: count["count(*)"],
+    });
   }
 
   async create(req: Request, res: Response) {
     const { subject, cost, schedule, user_id } = req.body;
 
-    const user = await db("users").select("*").where("users.id", "=", user_id);
     const insertedClassesIds = await db("classes").insert({
       subject,
       cost,
@@ -62,15 +76,15 @@ export default class ClassesController {
 
     const classSchedule = schedule.map((scheduleItem: ScheduleItem) => {
       return {
-        class_id,
         week_day: scheduleItem.week_day,
         from: convertHourToMinutes(scheduleItem.from),
         to: convertHourToMinutes(scheduleItem.to),
+        class_id,
       };
     });
 
     await db("class_schedule").insert(classSchedule);
 
-    return res.json({ user });
+    return res.json({ class_id });
   }
 }
