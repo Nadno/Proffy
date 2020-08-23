@@ -2,7 +2,7 @@
   position: relative;
 }
 
-#seach-teachers .input-block + .input-block {
+.input-block + .input-block {
   margin-top: 1.4rem;
 }
 

@@ -10,7 +10,7 @@ import {
   getTokenFromHeaders,
 } from "../Utils/jwt";
 
-interface IDecoded {
+export interface IDecoded {
   id: number;
   version: number;
   iat: number;
@@ -23,13 +23,13 @@ export default class UsersController {
 
     const hash = bcrypt.hashSync(password, 10);
 
-    const emailAlredyExists = await db("users")
+    const emailAlreadyExists = await db("users")
       .select("users.email")
       .where("users.email", "=", email);
 
-    if (emailAlredyExists.length > 0) {
+    if (emailAlreadyExists.length > 0) {
       return res.status(400).json("Esse email já está cadastrado!");
-    }
+    };
 
     const insertedUsersIds = await db("users").insert({
       email,
@@ -41,8 +41,15 @@ export default class UsersController {
     });
 
     const dbNewAccount = await db("users")
-      .select("id", "email", "name", "avatar", "whatsapp", "bio", "jwtVersion")
-      .where("users.id", "=", insertedUsersIds);
+      .select(
+        "id", 
+        "email", 
+        "name", 
+        "avatar", 
+        "whatsapp", 
+        "bio", 
+        "jwtVersion"
+      ).where("users.id", "=", insertedUsersIds);
     const account = dbNewAccount[0];
 
     const token = generateJwt({ id: account.id });
@@ -56,7 +63,7 @@ export default class UsersController {
   }
 
   async index(req: Request, res: Response) {
-    const { id } = req.params;
+    const { id } = req.body;
 
     const user = await db("users")
       .select("name", "avatar", "whatsapp", "bio")
@@ -77,9 +84,18 @@ export default class UsersController {
     const match = bcrypt.compareSync(password, dbPassword[0].password);
     if (!match) return res.status(400).json("Usuário ou senha inválidos!");
 
-    const dbAccount = await db("users").select("*").where("email", "=", email);
-    const account = dbAccount[0];
+    const dbAccount = await db("users")
+    .select(
+      "id",
+      "email",
+      "name",
+      "avatar",
+      "whatsapp",
+      "bio",
+      "jwtVersion",
+    ).where("email", "=", email);
 
+    const account = dbAccount[0];
     const token = generateJwt({ id: account.id });
     const refreshToken = generateRefreshJwt({
       id: account.id,
@@ -87,7 +103,6 @@ export default class UsersController {
     });
 
     return res.json({
-      message: "Succes signin!",
       account,
       token,
       refreshToken,
@@ -100,6 +115,7 @@ export default class UsersController {
     const dbPassword = await db("users")
       .select("password")
       .where("users.email", "=", email);
+    
     const match = bcrypt.compareSync(password, dbPassword[0].password);
     if (!match) return res.status(400).json({ message: "Senha inválida!" });
 
@@ -117,13 +133,13 @@ export default class UsersController {
     }
   }
 
-  async resfresh(req: Request, res: Response) {
-    const token = String(getTokenFromHeaders(req.headers));
+  async refresh(req: Request, res: Response) {
+    const token = getTokenFromHeaders(req.headers);
 
     if (!token) return res.status(401).send("Token invalido!");
 
     try {
-      const decoded = <IDecoded>verifyRefreshJwt(token);
+      const decoded = <IDecoded> verifyRefreshJwt(token);
       const dbAccount = await db("users").select("*").where("users.id", "=", decoded.id);
       const account = dbAccount[0];
       

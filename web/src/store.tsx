@@ -1,9 +1,24 @@
 import React, { createContext, useState, useEffect } from "react";
-import { setAccount, setToken, setRefreshToken, getAccount, getToken, getRefreshToken } from "./Utils/account";
+import {
+  setAccount,
+  setToken,
+  setRefreshToken,
+  getAccount,
+  getToken,
+  getRefreshToken,
+} from "./Utils/account";
+
+interface IAccount {
+  id: number;
+  email: string;
+  name: string;
+  avatar: string;
+  whatsapp: string;
+  bio: string;
+}
 
 interface IUser {
-  message?: string;
-  account: object | null;
+  account: IAccount;
   token: string | null;
   refreshToken: string | null;
 }
@@ -17,7 +32,14 @@ const Context = createContext<IProps | null>(null);
 
 const AuthProvider: React.FC = ({ children }) => {
   const [user, setUser] = useState<IUser>({
-    account: null,
+    account: {
+      id: 0,
+      email: "",
+      name: "",
+      avatar: "",
+      whatsapp: "",
+      bio: "",
+    },
     token: null,
     refreshToken: null,
   });
@@ -28,15 +50,15 @@ const AuthProvider: React.FC = ({ children }) => {
     const account = getAccount();
     const token = getToken();
     const refreshToken = getRefreshToken();
-    
-    if(account && token && refreshToken) {
+
+    if (account && token && refreshToken) {
       setUser({
         account,
         token,
         refreshToken,
       });
-    };
-  };
+    }
+  }
 
   const handleLogin = (data: IUser) => {
     const account = data.account ? data.account : null;
@@ -56,7 +78,7 @@ const AuthProvider: React.FC = ({ children }) => {
   };
 
   return (
-    <Context.Provider value={{user, handleLogin}}>
+    <Context.Provider value={{ user, handleLogin }}>
       {children}
     </Context.Provider>
   );

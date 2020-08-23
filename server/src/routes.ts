@@ -13,14 +13,13 @@ const classesControllers = new ClassesController();
 const connectionsControllers = new ConnectionsController();
 
 routes.post("/users/sign-up", accountSingUp, usersControllers.create);
-
 routes.post("/users/sign-in", accountSingIn, usersControllers.signIn);
 routes.put("/users/update", usersControllers.update);
 routes.get("/users/:id", usersControllers.index);
-routes.post("/refresh", usersControllers.resfresh);
+routes.post("/refresh", usersControllers.refresh);
 
-routes.get("/classes", classesControllers.index);
-routes.post("/classes", classesControllers.create);
+routes.get("/classes/list", classesControllers.index);
+routes.post("/classes/create", classesControllers.create);
 
 routes.get("/connections", connectionsControllers.index);
 routes.post("/connections", connectionsControllers.create);

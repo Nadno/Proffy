@@ -19,14 +19,14 @@ export const apiPost = (path: string, data: object) => {
   const options = {
     headers: getHeaders(),
   };
-  
+
   return api.post(path, data, options);
 };
 
-export const apiGet = (path: string, params: object = {}, authorization: boolean = false) => {
+export const apiGet = (path: string, params: object = {}) => {
   const options = {
     params,
-    headers: authorization ? getHeaders() : {},
+    headers:  getHeaders(),
   };
 
   return api.get(path, options);

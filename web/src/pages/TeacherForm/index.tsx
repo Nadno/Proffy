@@ -10,7 +10,7 @@ import Select from "../../components/Select";
 
 import warningIcon from "../../assets/images/icons/warning.svg";
 
-import api from "../../services/api";
+import { apiPost } from "../../services/api";
 
 import "./styles.css";
 import LoginRedirect from "../../components/LoginRedirect";
@@ -19,12 +19,7 @@ const TeacherForm = () => {
   const AuthProvider = useContext(Context);
   const history = useHistory();
 
-  const [name, setName] = useState("");
-  const [avatar, setAvatar] = useState("");
-  const [whatsapp, setWhatsapp] = useState("");
-  const [bio, setBio] = useState("");
-
-  const [subject, setSubject] = useState("");
+  const [subject, setSubject] = useState("Português");
   const [cost, setCost] = useState("");
 
   const [scheduleItems, setScheduleItems] = useState([
@@ -62,18 +57,17 @@ const TeacherForm = () => {
 
   const handleCreateClass = (e: FormEvent) => {
     e.preventDefault();
+    const user_id = AuthProvider ? AuthProvider.user.account.id : 0;
+    if (user_id === 0) return null;
+
     const data = {
-      name,
-      avatar,
-      whatsapp,
-      bio,
+      user_id,
       subject,
       cost: Number(cost),
       schedule: scheduleItems,
     };
 
-    api
-      .post("classes", data)
+    apiPost("classes/create", data)
       .then(() => {
         alert("Cadastro realizado com sucesso!");
 
@@ -94,36 +88,6 @@ const TeacherForm = () => {
 
       <main>
         <form onSubmit={handleCreateClass}>
-          {/* <fieldset>
-            <legend>Seus dados</legend>
-            <Input
-              name="name"
-              label="Nome Completo"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-
-            <Input
-              name="avatar"
-              label="Avatar"
-              value={avatar}
-              onChange={(e) => setAvatar(e.target.value)}
-            />
-
-            <Input
-              name="whatsapp"
-              label="Whatsapp"
-              value={whatsapp}
-              onChange={(e) => setWhatsapp(e.target.value)}
-            />
-
-            <Textarea
-              name="bio"
-              label="Biografia"
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-            />
-          </fieldset> */}
           <fieldset>
             <legend>Sobre a aula</legend>
             <Select

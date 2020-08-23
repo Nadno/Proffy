@@ -57,8 +57,8 @@
     bottom: -28px;
   }
 
-  #seach-teachers .input-block + .input-block,
-  #seach-teachers .select-block + .select-block {
+  #search-teachers .input-block + .input-block,
+  #search-teachers .select-block + .select-block {
     margin-top: 0;
   }
 

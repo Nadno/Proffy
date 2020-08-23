@@ -12,6 +12,9 @@ import getSave, { getIds } from "../../Utils/storage";
 import "./styles.css";
 import Pagination from "../../components/Pagination";
 
+export const CLASSES_FOR_PAGE = 5;
+export const FAVORITES = "Favoritos";
+
 const TeacherList = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -33,11 +36,9 @@ const TeacherList = () => {
       page,
     };
 
-    const { data } = await apiGet("/classes", params);
+    const { data } = await apiGet("/classes/list", params);
     if (data.classes) setTeachers(data.classes);
-    if (data.count) {
-      setTotalPages(data.count / 5);
-    }
+    if (data.count) setTotalPages(data.count / CLASSES_FOR_PAGE);
   };
 
   const searchFavoriteOnStorage = (id: number) => {
@@ -47,14 +48,14 @@ const TeacherList = () => {
   };
 
   const subjectFilter = (value: string) => {
-    if (value === "Favoritos") {
+    if (value === FAVORITES) {
       setButtonDisabled(true);
       setSubject(value);
 
       const favorites = getSave();
       setTeachers(favorites);
       return 0;
-    }
+    };
     setButtonDisabled(false);
     setSubject(value);
   };
@@ -75,7 +76,7 @@ const TeacherList = () => {
               { value: "Ciências", label: "Ciências" },
               { value: "Educação física", label: "Educação física" },
               { value: "Física", label: "Física" },
-              { value: "Quimica", label: "Quimica" },
+              { value: "Química", label: "Química" },
               { value: "Matemática", label: "Matemática" },
               { value: "Português", label: "Português" },
             ]}

@@ -3,11 +3,10 @@ import { Teacher } from "./interfaces";
 
 const cookie = new Cookies();
 
-const FAVOTIRES_STORAGE = "favorites";
-
 const defaultOptions = {
   path: '/',
 };
+const FAVORITES_STORAGE = "favorites";
 
 export const getCookie = (name: string, options:CookieGetOptions = {} ) => {
   if(!name) return null;
@@ -28,13 +27,13 @@ export const removeCookie = (name: string, options:CookieSetOptions = {} ) => {
 }
 
 const getSave = () => {
-  let favorites = localStorage.getItem(FAVOTIRES_STORAGE);
+  let favorites = localStorage.getItem(FAVORITES_STORAGE);
 
   if(favorites) {
     const save = parseJson(favorites);
     return save;
   } else {
-    localStorage.setItem(FAVOTIRES_STORAGE, "[]");
+    localStorage.setItem(FAVORITES_STORAGE, "[]");
     return [];
   };
 };
@@ -42,7 +41,7 @@ const getSave = () => {
 export const saveStorage = (favorites: Array<object>) => {
   try {
     const save = JSON.stringify(favorites);
-    localStorage.setItem(FAVOTIRES_STORAGE, save);
+    localStorage.setItem(FAVORITES_STORAGE, save);
   } catch (err) {
     return err;
   }
