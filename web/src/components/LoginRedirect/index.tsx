@@ -6,7 +6,7 @@ import "./styles.css";
 const LoginRedirect = () => {
   const history = useHistory();
 
-  const redirectToSingIn = () => history.push("/signin");
+  const redirectToSingIn = () => history.push("/sign-in");
   const redirectToHome = () => history.push("/");
 
   return (

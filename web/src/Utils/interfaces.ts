@@ -1,10 +1,5 @@
 import { InputHTMLAttributes, SelectHTMLAttributes } from "react";
 
-export interface PageHeaderProps {
-  title: string;
-  description?: string;
-}
-
 export interface Teacher {
   avatar: string;
   bio: string;

@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom";
+
+import { UserContext } from "../../store";
 
 import logoImg from "../../assets/images/logo.svg";
 import landingImg from "../../assets/images/landing.svg";
@@ -8,18 +10,20 @@ import studyIcon from "../../assets/images/icons/study.svg";
 import giveClassesIcon from "../../assets/images/icons/give-classes.svg";
 import purpleHeartIcon from "../../assets/images/icons/purple-heart.svg";
 
-import api from "../../services/api";
+import { apiGet } from "../../services/api";
 
 import "./styles.css";
+import Sign from "../../components/Sign";
 
 const Landing = () => {
+  const AuthProvider = useContext(UserContext);
+
   const [totalConnections, setTotalConnections] = useState(0);
 
-  //useEffect(() => {
-  //  api
-  //    .get("/connections")
-  //    .then((response) => setTotalConnections(response.data.total));
-  //}, []);
+  useEffect(() => {
+    apiGet("/connections")
+      .then((response) => setTotalConnections(response.data.total));
+  }, []);
 
   return (
     <div id="page-landing">
@@ -51,14 +55,7 @@ const Landing = () => {
           Total de {totalConnections} conexões já realizadas
           <img src={purpleHeartIcon} alt="Coração roxo" />
         </span>
-        <div className="sign">
-          <Link to="/signin">
-            Faça seu login!
-          </Link>
-          <Link to="/signup">
-            Cadastre-se
-          </Link>
-        </div>
+        { AuthProvider?.user.token ? null : <Sign /> }
       </div>
     </div>
   );

@@ -1,9 +1,10 @@
 import React, { useState, FormEvent } from "react";
 
+import { apiPost } from "../../services/api";
+
 import Input from "../../components/Input";
 import Textarea from "../../components/Textarea";
 
-import { apiPost } from "../../services/api";
 
 import "./styles.css";
 
@@ -43,7 +44,7 @@ const SignUp = () => {
             Crie sua <br /> conta gratuíta
           </h1>
           <span>
-            Basta preencher esses dados <br /> e você estará conosco.
+            Basta preencher esses dados <br /> e você estará com nós.
           </span>
         </div>
 

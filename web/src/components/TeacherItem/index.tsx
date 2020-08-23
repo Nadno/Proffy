@@ -3,6 +3,8 @@ import { Teacher } from "../../Utils/interfaces";
 
 import api from "../../services/api";
 
+import Avatar from '../Avatar';
+
 import whatsappIcon from "../../assets/images/icons/whatsapp.svg";
 import initialHeartIcon from "../../assets/images/icons/heart.svg";
 import fullHeartIcon from "../../assets/images/icons/full-heart.svg";
@@ -15,6 +17,9 @@ interface TeacherItemProps {
   teacher: Teacher;
   isFavorite: boolean;
 }
+
+const FAVORITE = 'Favoritar';
+const UNFAVORITE = 'Desfavoritar';
 
 const TeacherItem: React.FC<TeacherItemProps> = ({ teacher, isFavorite }) => {
   const { avatar, bio, cost, name, subject, whatsapp, id } = teacher;
@@ -63,7 +68,7 @@ const TeacherItem: React.FC<TeacherItemProps> = ({ teacher, isFavorite }) => {
   return (
     <article className="teacher-item">
       <header>
-        <img src={avatar} alt="Professor" />
+        <Avatar avatar={avatar} link={`/profile/${id}`} />
         <div>
           <strong>{name}</strong>
           <span>{subject}</span>
@@ -83,7 +88,7 @@ const TeacherItem: React.FC<TeacherItemProps> = ({ teacher, isFavorite }) => {
             type="button"
             className="fav"
             onClick={handleFavorite}
-            title={heart.isFavorite ? "Desfavoritar" : "Favoritar"}
+            title={heart.isFavorite ? UNFAVORITE : FAVORITE}
           >
             <img src={heart.svg} alt="" />
           </button>

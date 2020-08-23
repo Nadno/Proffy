@@ -26,8 +26,16 @@
   opacity: 0.6;
 }
 
-.page-header .top-bar-container > img {
+.page-header .top-bar-container .logo-and-profile {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.page-header .top-bar-container .logo-and-profile > img {
   height: 1.6rem;
+  margin-top: 0.8rem;
 }
 
 .page-header .header-content {

@@ -1,21 +1,25 @@
-import React, { useState, FormEvent, useEffect } from "react";
+import React, { useState, FormEvent, useContext } from "react";
 import { Teacher } from "../../Utils/interfaces";
+
+import { apiGet } from "../../services/api";
+import getSave, { getIds } from "../../Utils/storage";
+
+import { UserContext } from "../../store";
 
 import PageHeader from "../../components/PageHeader";
 import TeacherItem from "../../components/TeacherItem";
 import Input from "../../components/Input";
 import Select from "../../components/Select";
-
-import { apiGet } from "../../services/api";
-import getSave, { getIds } from "../../Utils/storage";
-
-import "./styles.css";
 import Pagination from "../../components/Pagination";
 
-export const CLASSES_FOR_PAGE = 5;
-export const FAVORITES = "Favoritos";
+import "./styles.css";
+
+const CLASSES_FOR_PAGE = 5;
+export const FAVORITES = "Favorites";
 
 const TeacherList = () => {
+  const AuthProvider = useContext(UserContext);
+
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [teachers, setTeachers] = useState([]);
@@ -24,8 +28,6 @@ const TeacherList = () => {
   const [subject, setSubject] = useState("");
   const [week_day, setWeek_day] = useState("");
   const [time, setTime] = useState("");
-
-  useEffect(() => console.log(page), [page]);
 
   const searchTeacher = async (e: FormEvent) => {
     e.preventDefault();
@@ -62,7 +64,12 @@ const TeacherList = () => {
 
   return (
     <div id="page-teacher-list" className="container">
-      <PageHeader title="Estes são os proffys disponíveis.">
+      <PageHeader
+        title="Estes são os proffys disponíveis."
+        description=""
+        avatar={AuthProvider?.user.account.avatar}
+        user_id={AuthProvider?.user.account.id}
+      >
         <form id="search-teachers" onSubmit={searchTeacher}>
           <Select
             name="subject"
@@ -70,7 +77,7 @@ const TeacherList = () => {
             value={subject}
             onChange={(e) => subjectFilter(e.target.value)}
             options={[
-              { value: "Favoritos", label: "Favoritos" },
+              { value: "Favorites", label: "Favoritos" },
               { value: "Artes", label: "Artes" },
               { value: "Biologia", label: "Biologia" },
               { value: "Ciências", label: "Ciências" },

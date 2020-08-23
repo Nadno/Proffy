@@ -1,22 +1,22 @@
 import React, { useState, FormEvent, useContext } from "react";
 import { useHistory } from "react-router-dom";
 
-import { Context } from "../../store";
+import { apiPost } from "../../services/api";
+
+import { UserContext } from "../../store";
 
 import PageHeader from "../../components/PageHeader";
 import Input from "../../components/Input";
-import Textarea from "../../components/Textarea";
 import Select from "../../components/Select";
+import LoginRedirect from "../../components/LoginRedirect";
 
 import warningIcon from "../../assets/images/icons/warning.svg";
 
-import { apiPost } from "../../services/api";
 
 import "./styles.css";
-import LoginRedirect from "../../components/LoginRedirect";
 
 const TeacherForm = () => {
-  const AuthProvider = useContext(Context);
+  const AuthProvider = useContext(UserContext);
   const history = useHistory();
 
   const [subject, setSubject] = useState("Português");
@@ -74,7 +74,6 @@ const TeacherForm = () => {
         history.push('/');
       })
       .catch(() => alert("Erro ao cadastrar aula!"));
-      
   };
 
   if (!AuthProvider?.user?.token) return <LoginRedirect />;
@@ -84,6 +83,8 @@ const TeacherForm = () => {
       <PageHeader
         title="Que incrível que você quer dar aulas."
         description="O primeiro passo é preencher esse formulário de inscrição"
+        avatar={AuthProvider.user.account.avatar}
+        user_id={AuthProvider.user.account.id}
       />
 
       <main>
@@ -101,7 +102,7 @@ const TeacherForm = () => {
                 { value: "Ciências", label: "Ciências" },
                 { value: "Educação física", label: "Educação física" },
                 { value: "Física", label: "Física" },
-                { value: "Quimica", label: "Quimica" },
+                { value: "Química", label: "Química" },
                 { value: "Matemática", label: "Matemática" },
                 { value: "Português", label: "Português" },
               ]}

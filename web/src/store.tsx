@@ -28,7 +28,7 @@ interface IProps {
   handleLogin: Function;
 }
 
-const Context = createContext<IProps | null>(null);
+const UserContext = createContext<IProps | null>(null);
 
 const AuthProvider: React.FC = ({ children }) => {
   const [user, setUser] = useState<IUser>({
@@ -46,7 +46,7 @@ const AuthProvider: React.FC = ({ children }) => {
 
   useEffect(() => getAccountFromCookie(), []);
 
-  function getAccountFromCookie() {
+  const getAccountFromCookie = () => {
     const account = getAccount();
     const token = getToken();
     const refreshToken = getRefreshToken();
@@ -58,7 +58,7 @@ const AuthProvider: React.FC = ({ children }) => {
         refreshToken,
       });
     }
-  }
+  };
 
   const handleLogin = (data: IUser) => {
     const account = data.account ? data.account : null;
@@ -78,10 +78,10 @@ const AuthProvider: React.FC = ({ children }) => {
   };
 
   return (
-    <Context.Provider value={{ user, handleLogin }}>
+    <UserContext.Provider value={{ user, handleLogin }}>
       {children}
-    </Context.Provider>
+    </UserContext.Provider>
   );
 };
 
-export { Context, AuthProvider };
+export { UserContext, AuthProvider };

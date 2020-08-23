@@ -3,7 +3,8 @@ import { Link, useHistory } from "react-router-dom";
 
 import { AxiosResponse } from "axios";
 import { apiPost } from "../../services/api";
-import { Context } from '../../store';
+
+import { UserContext } from '../../store';
 
 import Input from "../../components/Input";
 
@@ -13,7 +14,7 @@ import backIcon from "../../assets/images/icons/back.svg";
 import "./styles.css";
 
 const SignIn = () => {
-  const AuthProvider = useContext(Context);
+  const AuthProvider = useContext(UserContext);
   const history = useHistory();
 
   const [account, setAccount] = useState({
@@ -28,7 +29,7 @@ const SignIn = () => {
     });
   };
 
-  const dataDetructing = (res: AxiosResponse) => {
+  const dataDestructing = (res: AxiosResponse) => {
     AuthProvider?.handleLogin(res.data);
     history.push("/study");
   };
@@ -36,12 +37,12 @@ const SignIn = () => {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     apiPost('/users/sign-in', account)
-    .then(dataDetructing);
+    .then(dataDestructing);
   };
 
   return (
-    <div id="page-signin">
-      <div id="page-signin-content">
+    <div id="page-sign-in">
+      <div id="page-sign-in-content">
         <div className="logo-container">
           <Link to="/">
             <img src={backIcon} alt="Voltar" />
@@ -55,7 +56,7 @@ const SignIn = () => {
             <fieldset>
               <legend>
                 <h1>Fazer login</h1>
-                <Link to="/signup">Criar uma conta</Link>
+                <Link to="/sign-up">Criar uma conta</Link>
               </legend>
               <Input 
                 label="E-mail"
