@@ -1,7 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
+import { UserContext } from '../../store';
+
 import { apiGet } from '../../services/api';
+import verifyExpireToken from '../../Utils/refreshToken';
 
 const Profile = () => {
+  const AuthProvider = useContext(UserContext);
+
   const [account, setAccount] = useState({
     avatar: "",
     bio: "",
@@ -11,12 +16,22 @@ const Profile = () => {
     whatsapp: "",
   });
 
-  useEffect(() => {
-    const id = 1;
+  const getUsers = async () => {
+    const id = AuthProvider?.user.account.id;
+
+    const itsOk = await verifyExpireToken();
+    // if(!itsOk) return console.log("Logout");
     
-    apiGet(`/users/${id}`)
-      .then(res => setAccount(res.data[0]))
-      .catch(res => {throw new Error(res)});
+    await apiGet(`/users/${id}`)
+      .then(res => {
+        setAccount(res.data);
+        console.log(res.data, AuthProvider?.user.account.id);
+      })
+      .catch(alert);
+  };
+
+  useEffect(() => {
+    getUsers();
   }, []);
 
   return (

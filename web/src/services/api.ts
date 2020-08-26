@@ -1,10 +1,21 @@
 import axios from 'axios';
 
-import { getToken } from '../Utils/account';
+import { getToken, getRefreshToken, setToken } from '../Utils/account';
 
 const api = axios.create({
   baseURL: 'http://localhost:3333',
 });
+
+export const apiRefreshToken = (refreshToken: string) => {
+  const URL = '/refresh';
+  const options = {
+    headers: {
+      Authorization: `Bearer ${refreshToken}`,
+    },
+  };
+
+  return api.post(URL, {}, options);
+};
 
 export const getHeaders = () => {
   const token = getToken();

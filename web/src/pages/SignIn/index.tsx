@@ -1,10 +1,7 @@
-import React, { useState, useContext, FormEvent } from "react";
+import React, { useState, FormEvent } from "react";
 import { Link, useHistory } from "react-router-dom";
 
-import { AxiosResponse } from "axios";
 import { apiPost } from "../../services/api";
-
-import { UserContext } from '../../store';
 
 import Input from "../../components/Input";
 
@@ -12,32 +9,44 @@ import logoImg from "../../assets/images/logo.svg";
 import backIcon from "../../assets/images/icons/back.svg";
 
 import "./styles.css";
+import handlingFormResponse from "../../Utils/handlingResponses";
+import FormError from "../../components/FormError";
+import { setToken, setRefreshToken, setAccount } from "../../Utils/account";
 
 const SignIn = () => {
-  const AuthProvider = useContext(UserContext);
   const history = useHistory();
-
-  const [account, setAccount] = useState({
+  const [error, setError] = useState("");
+  const [newAccount, setNewAccount] = useState({
     email: "",
     password: "",
   });
 
   const handleChange = (value: string, name: string) => {
-    setAccount({
-      ...account,
+    setNewAccount({
+      ...newAccount,
       [name]: value,
     });
   };
 
-  const dataDestructing = (res: AxiosResponse) => {
-    AuthProvider?.handleLogin(res.data);
-    history.push("/study");
-  };
-
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    apiPost('/users/sign-in', account)
-    .then(dataDestructing);
+
+    await apiPost("/users/sign-in", newAccount)
+      .then(handlingFormResponse)
+      .then(res => {
+        if (!res.account) return setError(res);
+
+        const account = res.account ? res.account : null;
+        const token = res.token ? res.token : null;
+        const refreshToken = res.refreshToken ? res.refreshToken : null;
+
+        setAccount(account);
+        setToken(token);
+        setRefreshToken(refreshToken);
+
+        history.push('/');
+        history.go(0);
+      });
   };
 
   return (
@@ -58,22 +67,22 @@ const SignIn = () => {
                 <h1>Fazer login</h1>
                 <Link to="/sign-up">Criar uma conta</Link>
               </legend>
-              <Input 
+              <Input
                 label="E-mail"
                 name="email"
                 type="email"
-                value={account.email}
+                value={newAccount.email}
                 onChange={(e) => handleChange(e.target.value, e.target.id)}
               />
               <Input
                 label="Senha"
                 name="password"
                 type="password"
-                value={account.password}
+                value={newAccount.password}
                 onChange={(e) => handleChange(e.target.value, e.target.id)}
-              />
+              /> 
             </fieldset>
-
+            <FormError error={error} />
             <fieldset>
               <label htmlFor="lembrar-me">
                 <input id="lembrar-me" name="lembrar-me" type="checkbox" />

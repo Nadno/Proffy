@@ -9,11 +9,11 @@ const options = { abortEarly: true };
 
 const accountSingIn = (req: Request, res: Response, next: NextFunction) => {
   const { email, password } = req.body;
-
   const schema = Joi.object({
     email: rules.email,
     password: rules.password,
   });
+
   const { error } = schema.validate({ email, password }, options);
 
   if (error) {
@@ -21,8 +21,9 @@ const accountSingIn = (req: Request, res: Response, next: NextFunction) => {
     const { type, path } = details;
     
     return res.json({
-      type,
-      fieldName: path[0],
+      status: 400,
+      message: type,
+      field: path[0],
     });
   };
 
@@ -61,8 +62,9 @@ const accountSingUp = (req: Request, res: Response, next: NextFunction) => {
     const { type, path } = details;
     
     return res.json({
-      type,
-      fieldName: path[0],
+      status: 400,
+      message: type,
+      field: path[0],
     });
   }
 

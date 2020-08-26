@@ -17,7 +17,15 @@ export interface IDecoded {
   exp: number;
 }
 
-const ACCOUNT = ["id", "email", "name", "avatar", "whatsapp", "bio"];
+const ACCOUNT = [
+  "id",
+  "email",
+  "name",
+  "avatar",
+  "whatsapp",
+  "bio",
+  "jwtVersion",
+];
 
 export default class UsersController {
   async create(req: Request, res: Response) {
@@ -42,15 +50,15 @@ export default class UsersController {
       bio,
     });
 
-    const dbNewAccount = await db("users")
-      .select(ACCOUNT, "jwtVersion")
+    const account = await db("users")
+      .select(ACCOUNT)
       .where("users.id", "=", insertedUsersIds);
-    const account = dbNewAccount[0];
+    const newAccount = account[0];
 
-    const token = generateJwt({ id: account.id });
+    const token = generateJwt({ id: newAccount.id });
     const refreshToken = generateRefreshJwt({
-      id: account.id,
-      version: account.jwtVersion,
+      id: newAccount.id,
+      version: newAccount.jwtVersion,
     });
 
     return res.json({
@@ -67,25 +75,32 @@ export default class UsersController {
       const user = await db("users").select(ACCOUNT).where("id", "=", id);
       if (user.length === 0) return res.json("Este usuário não existe!");
 
-      return res.json(user);
+      return res.json(user[0]);
     } catch (err) {
       return res.status(500).json("Ocorreu um erro inesperado!");
-    };
-  };
+    }
+  }
 
   async signIn(req: Request, res: Response) {
     const { email, password } = req.body;
+    const bad_request = (message: string, status: number) =>
+      res.json({
+        ok: false,
+        status,
+        message: message,
+      });
 
     const dbPassword = await db("users")
       .select("password")
       .where("email", "=", email);
-    if (dbPassword.length === 0) return res.json("Usuário ou senha inválidos!");
+    if (dbPassword.length === 0)
+      return bad_request("Usuário ou senha inválidos!", 400);
 
     const match = bcrypt.compareSync(password, dbPassword[0].password);
-    if (!match) return res.status(400).json("Usuário ou senha inválidos!");
+    if (!match) return bad_request("Usuário ou senha inválidos!", 400);
 
     const dbAccount = await db("users")
-      .select(ACCOUNT, "jwtVersion")
+      .select(ACCOUNT)
       .where("email", "=", email);
 
     const account = dbAccount[0];
@@ -96,6 +111,7 @@ export default class UsersController {
     });
 
     return res.json({
+      status: 200,
       account,
       token,
       refreshToken,
@@ -135,23 +151,24 @@ export default class UsersController {
         message: message,
       });
 
-    if (!token) return unauthorized("Token invalido!");
+    if (!token) {
+      return unauthorized("Token invalido!");
+    }
 
     try {
       const decoded = <IDecoded>verifyRefreshJwt(token);
       const dbAccount = await db("users")
-        .select("*")
-        .where("users.id", "=", decoded.id);
+        .select(ACCOUNT)
+        .where("id", "=", decoded.id);
       const account = dbAccount[0];
 
       if (!account) return unauthorized("Token invalido!");
       if (decoded.version !== account.jwtVersion)
         return unauthorized("Token invalido!");
-
       const meta = {
         token: generateJwt({ id: account.id }),
       };
-
+      console.log("***Refresh!");
       return res.json(meta);
     } catch (err) {
       return unauthorized("Token invalido!");

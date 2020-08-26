@@ -1,0 +1,11 @@
+.error {
+  text-align: center;
+  font-size: 1.3rem;
+  color: var(--color-line-in-white);
+  padding: 0.4rem;
+  margin: 0.2rem;
+
+  border: 1px solid red;
+  border-radius: 0.4rem;
+  background-color: rgba(255, 0, 0, 0.5);
+}

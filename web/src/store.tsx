@@ -1,37 +1,36 @@
 import React, { createContext, useState, useEffect } from "react";
 import {
-  setAccount,
-  setToken,
-  setRefreshToken,
   getAccount,
   getToken,
   getRefreshToken,
+  removeAccount,
+  removeToken,
+  removeRefreshToken,
 } from "./Utils/account";
+import { Redirect } from "react-router-dom";
 
-interface IAccount {
-  id: number;
-  email: string;
-  name: string;
-  avatar: string;
-  whatsapp: string;
-  bio: string;
-}
-
-interface IUser {
-  account: IAccount;
+export interface User {
+  account: {
+    id: number;
+    email: string;
+    name: string;
+    avatar: string;
+    whatsapp: string;
+    bio: string;
+  };
   token: string | null;
   refreshToken: string | null;
 }
 
-interface IProps {
-  user: IUser;
-  handleLogin: Function;
+interface Context {
+  user: User;
+  signOut: Function;
 }
 
-const UserContext = createContext<IProps | null>(null);
+const UserContext = createContext<Context | null>(null);
 
 const AuthProvider: React.FC = ({ children }) => {
-  const [user, setUser] = useState<IUser>({
+  const [user, setUser] = useState<User>({
     account: {
       id: 0,
       email: "",
@@ -44,41 +43,30 @@ const AuthProvider: React.FC = ({ children }) => {
     refreshToken: null,
   });
 
-  useEffect(() => getAccountFromCookie(), []);
-
-  const getAccountFromCookie = () => {
+  useEffect(() => {
     const account = getAccount();
     const token = getToken();
     const refreshToken = getRefreshToken();
-
+  
     if (account && token && refreshToken) {
       setUser({
         account,
         token,
         refreshToken,
       });
-    }
-  };
+    };
+  }, []);
 
-  const handleLogin = (data: IUser) => {
-    const account = data.account ? data.account : null;
-    const token = data.token ? data.token : null;
-    const refreshToken = data.refreshToken ? data.refreshToken : null;
-
-    if (!account || !token || !refreshToken) return null;
-
-    setUser({
-      account,
-      token,
-      refreshToken,
-    });
-    setAccount(account);
-    setToken(token);
-    setRefreshToken(refreshToken);
+  const signOut = () => {
+    removeAccount();
+    removeToken();
+    removeRefreshToken();
+    
+    return <Redirect to="/sign-in" />
   };
 
   return (
-    <UserContext.Provider value={{ user, handleLogin }}>
+    <UserContext.Provider value={{ user, signOut }}>
       {children}
     </UserContext.Provider>
   );

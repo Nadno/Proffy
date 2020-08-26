@@ -1,20 +1,20 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 
-import './styles.css';
+import "./styles.css";
 
 interface IAvatarProps {
   avatar: string;
   link: string;
-};
+}
 
 const Avatar: React.FC<IAvatarProps> = ({ avatar, link }) => {
   return (
-    <div id="avatar">
-      <Link to={link} target="_blank">
-        <img src={avatar} alt="Avatar"/>
+    <article id="avatar">
+      <Link to={link}>
+        <img src={avatar} alt="Avatar" />
       </Link>
-    </div>
+    </article>
   );
 };
 

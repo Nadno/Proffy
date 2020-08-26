@@ -11,6 +11,7 @@ const checkJwt = (req: Request, res: Response, next: NextFunction) => {
   const excludePaths = [
     "/users/sign-in",
     "/users/sign-up",
+    "/refresh",
     "/classes/list",
     "/connections",
   ];

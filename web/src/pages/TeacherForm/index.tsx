@@ -14,6 +14,7 @@ import warningIcon from "../../assets/images/icons/warning.svg";
 
 
 import "./styles.css";
+import verifyExpireToken from "../../Utils/refreshToken";
 
 const TeacherForm = () => {
   const AuthProvider = useContext(UserContext);
@@ -55,11 +56,12 @@ const TeacherForm = () => {
     setScheduleItems(updatedScheduleItems);
   };
 
-  const handleCreateClass = (e: FormEvent) => {
+  const handleCreateClass = async (e: FormEvent) => {
     e.preventDefault();
-    const user_id = AuthProvider ? AuthProvider.user.account.id : 0;
-    if (user_id === 0) return null;
+    const SESSION_EXPIRED = "Sessão expirada! Refaça o login para continuar";
+    const user_id = AuthProvider?.user ? AuthProvider?.user.account.id : 0;
 
+    if (user_id === 0) return null;
     const data = {
       user_id,
       subject,
@@ -67,24 +69,27 @@ const TeacherForm = () => {
       schedule: scheduleItems,
     };
 
-    apiPost("classes/create", data)
-      .then(() => {
-        alert("Cadastro realizado com sucesso!");
+    const itsOk = await verifyExpireToken();
+    if(!itsOk) return AuthProvider?.signOut(SESSION_EXPIRED);
 
-        history.push('/');
-      })
-      .catch(() => alert("Erro ao cadastrar aula!"));
+    await apiPost("classes/create", data)
+    .then(() => {
+      console.log("Cadastro realizado com sucesso!");
+
+      history.push('/');
+    })
+    .catch(() => console.log("Erro ao cadastrar aula!"));
   };
 
-  if (!AuthProvider?.user?.token) return <LoginRedirect />;
+  if (AuthProvider?.user.account.id === 0) return <LoginRedirect />;
 
   return (
     <div id="page-teacher-form" className="container">
       <PageHeader
         title="Que incrível que você quer dar aulas."
         description="O primeiro passo é preencher esse formulário de inscrição"
-        avatar={AuthProvider.user.account.avatar}
-        user_id={AuthProvider.user.account.id}
+        avatar={AuthProvider?.user.account.avatar}
+        user_id={AuthProvider?.user.account.id}
       />
 
       <main>

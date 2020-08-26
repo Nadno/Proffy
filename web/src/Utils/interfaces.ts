@@ -1,4 +1,4 @@
-import { InputHTMLAttributes, SelectHTMLAttributes } from "react";
+import {SelectHTMLAttributes } from "react";
 
 export interface Teacher {
   avatar: string;
@@ -8,11 +8,6 @@ export interface Teacher {
   subject: string;
   whatsapp: string;
   id: number;
-}
-
-export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  label: string;
-  name: string;
 }
 
 export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {

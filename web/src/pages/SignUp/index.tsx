@@ -1,14 +1,15 @@
 import React, { useState, FormEvent } from "react";
+import { useHistory } from "react-router-dom";
 
 import { apiPost } from "../../services/api";
 
 import Input from "../../components/Input";
 import Textarea from "../../components/Textarea";
 
-
 import "./styles.css";
 
 const SignUp = () => {
+  const history = useHistory();
   const [account, setAccount] = useState({
     email: "",
     password: "",
@@ -25,14 +26,14 @@ const SignUp = () => {
       [name]: value,
     });
 
-  const handleOnSubmit = (e: FormEvent) => {
+  const handleOnSubmit = async (e: FormEvent) => {
     e.preventDefault();
     
     try {
-      apiPost('/users/sign-up', account)
-        .then(console.log);
+      await apiPost('/users/sign-up', account);
+      history.push('/sign-in');
     } catch (err) {
-      console.log(err);
+      alert('Não foi possível criar sua conta!');
     }
   };
 

@@ -67,8 +67,8 @@ const TeacherList = () => {
       <PageHeader
         title="Estes são os proffys disponíveis."
         description=""
-        avatar={AuthProvider?.user.account.avatar}
-        user_id={AuthProvider?.user.account.id}
+        avatar={AuthProvider?.user.account ? AuthProvider?.user.account.avatar : ""}
+        user_id={AuthProvider?.user.account ? AuthProvider?.user.account.id : 0}
       >
         <form id="search-teachers" onSubmit={searchTeacher}>
           <Select

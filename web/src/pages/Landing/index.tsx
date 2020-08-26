@@ -12,8 +12,11 @@ import purpleHeartIcon from "../../assets/images/icons/purple-heart.svg";
 
 import { apiGet } from "../../services/api";
 
-import "./styles.css";
 import Sign from "../../components/Sign";
+import Avatar from "../../components/Avatar";
+import SignOutButton from "../../components/SignOutButton";
+
+import "./styles.css";
 
 const Landing = () => {
   const AuthProvider = useContext(UserContext);
@@ -21,41 +24,62 @@ const Landing = () => {
   const [totalConnections, setTotalConnections] = useState(0);
 
   useEffect(() => {
-    apiGet("/connections")
-      .then((response) => setTotalConnections(response.data.total));
+    apiGet("/connections").then((response) =>
+      setTotalConnections(response.data.total)
+    );
   }, []);
 
   return (
     <div id="page-landing">
-      <div id="page-landing-content" className="container">
-        <div className="logo-container">
-          <img src={logoImg} alt="Proffy Logo" />
-          <h2>Sua plataforma de estudos online.</h2>
-        </div>
+      <div id="page-landing-content">
+        <header>
+          <Avatar
+            avatar="https://avatars0.githubusercontent.com/u/62628261?s=460&u=8e53dd470fb29af34da48cbb698284eb3cf19032&v=4"
+            link="/"
+          />
 
-        <img
-          src={landingImg}
-          alt="Plataforma de estudos"
-          className="hero-image"
-        />
+          <SignOutButton signOut={() => console.log("ok")} />
+        </header>
 
-        <div className="buttons-container">
-          <Link to="/study" className="study">
-            <img src={studyIcon} alt="Estudar" />
-            Estudar
-          </Link>
+        <article className="intro">
+          <div className="logo-container">
+            <img src={logoImg} alt="Proffy Logo" />
+            <h2>Sua plataforma de estudos online.</h2>
+          </div>
 
-          <Link to="/give-classes" className="give-classes">
-            <img src={giveClassesIcon} alt="Dar aula" />
-            Dar aula
-          </Link>
-        </div>
+          <img
+            src={landingImg}
+            alt="Plataforma de estudos"
+            className="hero-image"
+          />
+        </article>
 
-        <span className="total-connections">
-          Total de {totalConnections} conexões já realizadas
-          <img src={purpleHeartIcon} alt="Coração roxo" />
-        </span>
-        { AuthProvider?.user.token ? null : <Sign /> }
+        <footer>
+          <span className="welcome">
+            Seja bem-vindo. <br />
+            <strong>O que deseja fazer?</strong>
+          </span>
+
+          <section className="options-container">
+            <span className="total-connections">
+              Total de {totalConnections} conexões já realizadas
+              <img src={purpleHeartIcon} alt="Coração roxo" />
+            </span>
+
+            <div className="buttons-container">
+              <Link to="/study" className="study">
+                <img src={studyIcon} alt="Estudar" />
+                Estudar
+              </Link>
+
+              <Link to="/give-classes" className="give-classes">
+                <img src={giveClassesIcon} alt="Dar aula" />
+                Dar aula
+              </Link>
+            </div>
+          </section>
+          {/* {AuthProvider?.user.token ? null : <Sign />} */}
+        </footer>
       </div>
     </div>
   );
