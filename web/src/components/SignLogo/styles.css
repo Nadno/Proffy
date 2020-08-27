@@ -1,0 +1,64 @@
+#logo-container {
+  position: relative;
+  width: 100%;
+  height: 350px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  padding: 6rem;
+  margin: 0;
+  background-image: url(../../assets/images/success-background.svg);
+  background-repeat: repeat;
+  background-position: 200px;
+  background-color: var(--color-primary);
+}
+
+
+#logo-container > button {
+  position: absolute;
+  width: 5rem;
+
+  border: none;
+  background-color: rgba(0, 0, 0, 0);
+
+  top: 0.1rem;
+  left: 2rem;
+}
+
+#logo-container > button img {
+  width: 100%;
+}
+
+#logo-container > img {
+  width: 100%;
+  max-width: 32rem;
+}
+
+#logo-container h2 {
+  font-size: 2rem;
+  line-height: 4rem;
+  text-align: left;
+  color: var(--color-line-in-white);
+}
+
+@media (min-height: 750px) {
+  #logo-container {
+    height: 50vh;
+  }
+}
+
+@media (min-width: 750px) and (max-height: 750px) {
+  #logo-container {
+    height: 100%;
+  }
+
+  #logo-container img {
+    height: 12rem;
+  }
+
+  #logo-container h2 {
+    font-size: 2rem;
+    line-height: 2rem;
+  }
+}

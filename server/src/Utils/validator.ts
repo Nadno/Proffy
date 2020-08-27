@@ -46,8 +46,8 @@ const accountSingUp = (req: Request, res: Response, next: NextFunction) => {
     password: rules.password,
     password_confirmation: Joi.string().valid(Joi.ref('password')).required(),
     name: Joi.string().required(),
-    avatar: Joi.string().required(),
-    bio: Joi.string(),
+    avatar: Joi.string(),
+    bio: Joi,
     whatsapp: Joi.string().pattern(
       new RegExp(/^([0-9]{2})([9]{1})?([0-9]{4})([0-9]{4})$/)
     ),

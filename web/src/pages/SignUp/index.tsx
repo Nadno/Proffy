@@ -3,8 +3,9 @@ import { useHistory } from "react-router-dom";
 
 import { apiPost } from "../../services/api";
 
-import Input from "../../components/Input";
+import SignLogo from "../../components/SignLogo";
 import Textarea from "../../components/Textarea";
+import Input from "../../components/Input";
 
 import "./styles.css";
 
@@ -40,14 +41,7 @@ const SignUp = () => {
   return (
     <div id="page-sign-up">
       <div id="page-sign-up-content">
-        <div className="sign-in-title">
-          <h1>
-            Crie sua <br /> conta gratuíta
-          </h1>
-          <span>
-            Basta preencher esses dados <br /> e você estará com nós.
-          </span>
-        </div>
+        <SignLogo />
 
         <div className="form-container">
           <form onSubmit={handleOnSubmit}>
@@ -56,14 +50,16 @@ const SignUp = () => {
                 <h1>01. Quem é você?</h1>
               </legend>
               <Input
-                label="Nome completo"
                 name="name"
                 value={account.name}
+                placeholder="Nome completo"
+                className="first"
                 onChange={(e) => handleChangeInput(e.target.id, e.target.value)}
               />
               <Textarea
                 name="bio"
-                label="Biografia"
+                placeholder="Biografia"
+                className="last"
                 value={account.bio}
                 onChange={(e) => handleChangeInput(e.target.id, e.target.value)}
               />
@@ -74,23 +70,25 @@ const SignUp = () => {
                 <h1>02. Email e Senha</h1>
               </legend>
               <Input
-                label="E-mail"
                 name="email"
                 type="email"
+                placeholder="E-mail"
+                className="first"
                 value={account.email}
                 onChange={(e) => handleChangeInput(e.target.id, e.target.value)}
               />
               <Input
-                label="Senha"
                 name="password"
                 type="password"
+                placeholder="Senha"
                 value={account.password}
                 onChange={(e) => handleChangeInput(e.target.id, e.target.value)}
               />
               <Input
-                label="Confirmar senha"
                 name="password_confirmation"
                 type="password"
+                placeholder="Confirmar senha"
+                className="last"
                 value={account.password_confirmation}
                 onChange={(e) => handleChangeInput(e.target.id, e.target.value)}
               />
@@ -98,18 +96,20 @@ const SignUp = () => {
 
             <fieldset>
               <legend>
-                <h1>03. Seus dados</h1>
+                <h1>03. Outros dados</h1>
               </legend>
               <Input
                 name="avatar"
-                label="Avatar"
+                placeholder="Avatar"
+                className="first"
                 value={account.avatar}
                 onChange={(e) => handleChangeInput(e.target.id, e.target.value)}
               />
 
               <Input
                 name="whatsapp"
-                label="Whatsapp"
+                placeholder="Whatsapp"
+                className="last"
                 value={account.whatsapp}
                 onChange={(e) => handleChangeInput(e.target.id, e.target.value)}
               />

@@ -1,13 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
-import {
-  getAccount,
-  getToken,
-  getRefreshToken,
-  removeAccount,
-  removeToken,
-  removeRefreshToken,
-} from "./Utils/account";
-import { Redirect } from "react-router-dom";
+
+import { getAccount, getToken, getRefreshToken } from "./Utils/account";
 
 export interface User {
   account: {
@@ -24,7 +17,7 @@ export interface User {
 
 interface Context {
   user: User;
-  signOut: Function;
+  authenticated: Boolean;
 }
 
 const UserContext = createContext<Context | null>(null);
@@ -47,26 +40,20 @@ const AuthProvider: React.FC = ({ children }) => {
     const account = getAccount();
     const token = getToken();
     const refreshToken = getRefreshToken();
-  
+
     if (account && token && refreshToken) {
       setUser({
         account,
         token,
         refreshToken,
       });
-    };
+    }
   }, []);
 
-  const signOut = () => {
-    removeAccount();
-    removeToken();
-    removeRefreshToken();
-    
-    return <Redirect to="/sign-in" />
-  };
-
   return (
-    <UserContext.Provider value={{ user, signOut }}>
+    <UserContext.Provider
+      value={{ user, authenticated: user.token ? true : false }}
+    >
       {children}
     </UserContext.Provider>
   );

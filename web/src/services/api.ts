@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { getToken, getRefreshToken, setToken } from '../Utils/account';
+import { getToken } from '../Utils/account';
 
 const api = axios.create({
   baseURL: 'http://localhost:3333',

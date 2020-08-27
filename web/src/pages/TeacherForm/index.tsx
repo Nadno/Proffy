@@ -1,10 +1,11 @@
 import React, { useState, FormEvent, useContext } from "react";
 import { useHistory } from "react-router-dom";
 
-import { apiPost } from "../../services/api";
-
 import { UserContext } from "../../store";
+import { apiPost } from "../../services/api";
+import verifyExpireToken from "../../Utils/refreshToken";
 
+import SignOut from "../../components/SignOut";
 import PageHeader from "../../components/PageHeader";
 import Input from "../../components/Input";
 import Select from "../../components/Select";
@@ -14,7 +15,6 @@ import warningIcon from "../../assets/images/icons/warning.svg";
 
 
 import "./styles.css";
-import verifyExpireToken from "../../Utils/refreshToken";
 
 const TeacherForm = () => {
   const AuthProvider = useContext(UserContext);
@@ -58,7 +58,6 @@ const TeacherForm = () => {
 
   const handleCreateClass = async (e: FormEvent) => {
     e.preventDefault();
-    const SESSION_EXPIRED = "Sessão expirada! Refaça o login para continuar";
     const user_id = AuthProvider?.user ? AuthProvider?.user.account.id : 0;
 
     if (user_id === 0) return null;
@@ -70,7 +69,7 @@ const TeacherForm = () => {
     };
 
     const itsOk = await verifyExpireToken();
-    if(!itsOk) return AuthProvider?.signOut(SESSION_EXPIRED);
+    if(!itsOk) return SignOut();
 
     await apiPost("classes/create", data)
     .then(() => {
