@@ -17,6 +17,7 @@ import Avatar from "../../components/Avatar";
 import SignOutButton from "../../components/SignOutButton";
 
 import "./styles.css";
+import { sign } from "crypto";
 
 const Landing = () => {
   const AuthProvider = useContext(UserContext);
@@ -33,12 +34,17 @@ const Landing = () => {
     <div id="page-landing">
       <div id="page-landing-content">
         <header>
-          <Avatar
-            avatar="https://avatars0.githubusercontent.com/u/62628261?s=460&u=8e53dd470fb29af34da48cbb698284eb3cf19032&v=4"
-            link="/"
-          />
-
-          <SignOutButton signOut={() => console.log("ok")} />
+          {AuthProvider?.user.token ? (
+            <>
+              <Avatar
+                avatar="https://avatars0.githubusercontent.com/u/62628261?s=460&u=8e53dd470fb29af34da48cbb698284eb3cf19032&v=4"
+                link="/"
+              />
+              <SignOutButton signOut={() => console.log("ok")} />
+            </>
+          ) : (
+            <Sign />
+          )}
         </header>
 
         <article className="intro">

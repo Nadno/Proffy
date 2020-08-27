@@ -1,0 +1,27 @@
+#sign {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+#sign a {
+  display: block;
+  width: 40%;
+  padding: 0.6rem 1.4rem;
+  margin-right: 1rem;
+
+  font-size: 1.4rem;
+  color: var(--color-text-in-white);
+  text-decoration: none;
+  text-align: center;
+
+  border: 1px #fff solid;
+  border-radius: 0.6rem;
+}
+
+@media (min-width: 700px) {
+  #sign {
+    width: 32rem;
+    justify-content: end;
+  }
+}
