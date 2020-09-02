@@ -10,9 +10,9 @@ import PageHeader from "../../components/PageHeader";
 import Input from "../../components/Input";
 import Select from "../../components/Select";
 import LoginRedirect from "../../components/LoginRedirect";
+import AvailableTimes from "../../components/Pattern/AvailableTimes";
 
 import warningIcon from "../../assets/images/icons/warning.svg";
-
 
 import "./styles.css";
 
@@ -28,7 +28,7 @@ const TeacherForm = () => {
   ]);
 
   const addNewScheduleItem = () => {
-    if (scheduleItems.length === 7) return 0;
+    if (scheduleItems.length === 7) return;
 
     setScheduleItems([
       ...scheduleItems,
@@ -69,15 +69,15 @@ const TeacherForm = () => {
     };
 
     const itsOk = await verifyExpireToken();
-    if(!itsOk) return SignOut();
+    if (!itsOk) return SignOut();
 
     await apiPost("classes/create", data)
-    .then(() => {
-      console.log("Cadastro realizado com sucesso!");
+      .then(() => {
+        console.log("Cadastro realizado com sucesso!");
 
-      history.push('/');
-    })
-    .catch(() => console.log("Erro ao cadastrar aula!"));
+        history.push("/");
+      })
+      .catch(() => console.log("Erro ao cadastrar aula!"));
   };
 
   if (AuthProvider?.user.account.id === 0) return <LoginRedirect />;
@@ -119,57 +119,11 @@ const TeacherForm = () => {
             />
           </fieldset>
 
-          <fieldset>
-            <legend>
-              Horários disponíveis
-              <button type="button" onClick={addNewScheduleItem}>
-                + Novo horário
-              </button>
-            </legend>
-
-            {scheduleItems.map((scheduleItem, index) => {
-              return (
-                <div key={scheduleItem.week_day} className="schedule-item">
-                  <Select
-                    name="week_day"
-                    label="Matéria"
-                    value={scheduleItem.week_day}
-                    onChange={(e) =>
-                      setScheduleItemValue(index, "week_day", e.target.value)
-                    }
-                    options={[
-                      { value: "0", label: "Domingo" },
-                      { value: "1", label: "Segunda-feira" },
-                      { value: "2", label: "Terça-feira" },
-                      { value: "4", label: "Quarta-feira" },
-                      { value: "3 física", label: "Quinta-feira" },
-                      { value: "5", label: "Sexta-feira" },
-                      { value: "6", label: "Sábado" },
-                    ]}
-                  />
-
-                  <Input
-                    name="from"
-                    label="Das"
-                    type="time"
-                    value={scheduleItem.from}
-                    onChange={(e) =>
-                      setScheduleItemValue(index, "from", e.target.value)
-                    }
-                  />
-                  <Input
-                    name="to"
-                    label="Até"
-                    type="time"
-                    value={scheduleItem.to}
-                    onChange={(e) =>
-                      setScheduleItemValue(index, "to", e.target.value)
-                    }
-                  />
-                </div>
-              );
-            })}
-          </fieldset>
+          <AvailableTimes
+            scheduleItems={scheduleItems}
+            addNewScheduleItem={addNewScheduleItem}
+            setScheduleItemValue={setScheduleItemValue}
+          />
 
           <footer>
             <p>

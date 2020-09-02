@@ -4,13 +4,15 @@ import { UserContext } from "../../store";
 import { apiGet } from "../../services/api";
 import verifyExpireToken from "../../Utils/refreshToken";
 import handlingFormResponse from "../../Utils/handlingResponses";
+
 import PageHeader from "../../components/PageHeader";
 import Avatar from "../../components/Avatar";
 import Input from "../../components/Input";
-
-import "./styles.css";
 import Textarea from "../../components/Textarea";
 import Select from "../../components/Select";
+import AvailableTimes from "../../components/Pattern/AvailableTimes";
+
+import "./styles.css";
 
 const Profile = () => {
   const AuthProvider = useContext(UserContext);
@@ -23,6 +25,9 @@ const Profile = () => {
     name: "",
     whatsapp: "",
   });
+  const [scheduleItems, setScheduleItems] = useState([
+    { week_day: 0, from: "", to: "" },
+  ]);
 
   const getUsers = async () => {
     const id = AuthProvider?.user.account.id;
@@ -44,6 +49,37 @@ const Profile = () => {
     console.log(AuthProvider);
   }, [AuthProvider]);
 
+  useEffect(() => console.log(scheduleItems), [scheduleItems]);
+
+  const addNewScheduleItem = () => {
+    if (scheduleItems.length === 7) return;
+
+    setScheduleItems([
+      ...scheduleItems,
+      {
+        week_day: 0,
+        from: "",
+        to: "",
+      },
+    ]);
+  };
+
+  const setScheduleItemValue = (
+    position: number,
+    field: string,
+    value: string
+  ) => {
+    const updatedScheduleItems = scheduleItems.map((scheduleItem, index) => {
+      if (index === position) {
+        return { ...scheduleItem, [field]: value };
+      }
+
+      return scheduleItem;
+    });
+
+    setScheduleItems(updatedScheduleItems);
+  };
+
   return (
     <div id="page-profile">
       <PageHeader title="">
@@ -56,7 +92,7 @@ const Profile = () => {
             <legend>
               <h1>Seus Dados</h1>
             </legend>
-       
+
             <div className="input-blocks-container">
               <Input name="name" label="Nome" />
               <Input name="last_name" label="Sobrenome" />
@@ -90,35 +126,11 @@ const Profile = () => {
             </legend>
           </fieldset>
 
-          <fieldset>
-            <legend>
-              <h1>Horários disponíveis</h1>
-            </legend>
-            <Select
-                    name="week_day"
-                    label="Matéria"
-                    options={[
-                      { value: "0", label: "Domingo" },
-                      { value: "1", label: "Segunda-feira" },
-                      { value: "2", label: "Terça-feira" },
-                      { value: "4", label: "Quarta-feira" },
-                      { value: "3 física", label: "Quinta-feira" },
-                      { value: "5", label: "Sexta-feira" },
-                      { value: "6", label: "Sábado" },
-                    ]}
-                  />
-
-                  <Input
-                    name="from"
-                    label="Das"
-                    type="time"
-                  />
-                  <Input
-                    name="to"
-                    label="Até"
-                    type="time"
-                  />
-          </fieldset>
+          <AvailableTimes
+            scheduleItems={scheduleItems}
+            addNewScheduleItem={addNewScheduleItem}
+            setScheduleItemValue={setScheduleItemValue}
+          />
         </form>
       </main>
     </div>

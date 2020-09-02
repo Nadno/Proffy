@@ -1,0 +1,35 @@
+#available-times .schedule-item:not(:last-child) {
+  padding-bottom: 1rem;
+  margin-bottom: 1.4rem;
+  border-bottom: 2px var(--color-primary-light) solid;
+}
+
+#available-times .schedule-item {
+  display: grid;
+  grid-template-areas: 
+  "materia materia"
+  "from to";
+  column-gap: 1.6rem;
+}
+
+#available-times .select-block {
+  grid-area: materia;
+}
+
+#available-times .input-block > #from {
+  grid-area: from;
+}
+
+#available-times .input-block > #to {
+  grid-area: to;
+}
+
+#available-times .input-block {
+  margin-top: 0 !important;
+}
+
+@media (min-width: 500px) {
+  #available-times .schedule-item {
+    grid-template-areas: "materia materia from to";
+  }
+}
