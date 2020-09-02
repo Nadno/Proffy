@@ -3,40 +3,44 @@ import { UserContext } from '../../store';
 
 import { apiGet } from '../../services/api';
 import verifyExpireToken from '../../Utils/refreshToken';
+import handlingFormResponse from '../../Utils/handlingResponses';
+import PageHeader from '../../components/PageHeader';
 
 const Profile = () => {
   const AuthProvider = useContext(UserContext);
 
   const [account, setAccount] = useState({
+    id: 0,
     avatar: "",
     bio: "",
     email: "",
-    id: 0,
     name: "",
     whatsapp: "",
   });
 
   const getUsers = async () => {
     const id = AuthProvider?.user.account.id;
-
+    
     const itsOk = await verifyExpireToken();
-    // if(!itsOk) return console.log("Logout");
+    if(!itsOk) return console.log("Logout");
     
     await apiGet(`/users/${id}`)
-      .then(res => {
+      .then(handlingFormResponse)
+      .then((res) => {
+        if (!res.account) return;
         setAccount(res.data);
-        console.log(res.data, AuthProvider?.user.account.id);
       })
       .catch(alert);
   };
 
   useEffect(() => {
-    getUsers();
-  }, []);
+    if (AuthProvider?.user.account.id) getUsers();
+    console.log(account);
+  }, [AuthProvider]);
 
   return (
     <div id="page-profile">
-      Nada ainda
+      <PageHeader title="Profile" />
     </div>
   )
 };

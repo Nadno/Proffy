@@ -38,7 +38,9 @@ export default class UsersController {
       .where("users.email", "=", email);
 
     if (emailAlreadyExists.length > 0) {
-      return res.status(400).json("Esse email já está cadastrado!");
+      return res.status(400).json({
+        message: "Esse email já está cadastrado!",
+      });
     }
 
     const insertedUsersIds = await db("users").insert({
@@ -73,11 +75,15 @@ export default class UsersController {
 
     try {
       const user = await db("users").select(ACCOUNT).where("id", "=", id);
-      if (user.length === 0) return res.json("Este usuário não existe!");
+      if (user.length === 0) return res.json({
+        message: "Este usuário não existe!",
+      });
 
       return res.json(user[0]);
     } catch (err) {
-      return res.status(500).json("Ocorreu um erro inesperado!");
+      return res.status(500).json({
+        message: "Ocorreu um erro inesperado!",
+      });
     }
   }
 
@@ -136,9 +142,13 @@ export default class UsersController {
         bio,
       });
 
-      return res.json("Dados atualizados com sucesso!");
+      return res.json({
+        message: "Dados atualizados com sucesso!",
+      });
     } catch (err) {
-      return res.json("Não foi possível atualizar seus dados!");
+      return res.json({
+        message: "Não foi possível atualizar seus dados! Tente novamente mais tarde.",
+      });
     }
   }
 

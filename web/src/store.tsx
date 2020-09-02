@@ -36,18 +36,19 @@ const AuthProvider: React.FC = ({ children }) => {
     refreshToken: null,
   });
 
+
   useEffect(() => {
     const account = getAccount();
     const token = getToken();
     const refreshToken = getRefreshToken();
-
+    
     if (account && token && refreshToken) {
       setUser({
         account,
         token,
         refreshToken,
       });
-    }
+    };
   }, []);
 
   return (

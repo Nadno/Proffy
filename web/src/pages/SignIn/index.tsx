@@ -2,12 +2,13 @@ import React, { useState, FormEvent } from "react";
 import { Link, useHistory } from "react-router-dom";
 
 import { apiPost } from "../../services/api";
-import handlingFormResponse from "../../Utils/handlingResponses";
+
 import { setToken, setRefreshToken, setAccount } from "../../Utils/account";
+import handlingFormResponse from "../../Utils/handlingResponses";
 
 import Input from "../../components/Input";
-import FormError from "../../components/FormError";
 import SignLogo from "../../components/SignLogo";
+import FormError from "../../components/FormError";
 
 import "./styles.css";
 
@@ -44,6 +45,8 @@ const SignIn = () => {
 
         history.push("/");
         history.go(0);
+      }).catch(() => {
+        setError("Falha ao se conectar com o servidor!")
       });
   };
 

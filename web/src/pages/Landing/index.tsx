@@ -26,7 +26,9 @@ const Landing = () => {
   useEffect(() => {
     apiGet("/connections").then((response) =>
       setTotalConnections(response.data.total)
-    );
+    ).catch(() => {
+      console.error("Falha ao se conectar com o servidor!")
+    });
   }, []);
 
   return (
@@ -83,7 +85,6 @@ const Landing = () => {
               </Link>
             </div>
           </section>
-          {/* {AuthProvider?.user.token ? null : <Sign />} */}
         </footer>
       </div>
     </div>

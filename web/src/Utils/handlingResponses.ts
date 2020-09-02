@@ -30,10 +30,10 @@ const handlingFormResponse = (res: AxiosResponse) => {
       };
 
     default: {
-      if (data.message.includes(EMPTY)) {
+      if (data.message && data.message.includes(EMPTY)) {
         return "Preencha todos os campos!";
       }
-      return data.message;
+      return data;
     }
   }
 };
