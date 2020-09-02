@@ -16,7 +16,7 @@ const Routes = () => {
       <Route path="/give-classes" component={TeacherForm} />
       <Route path="/sign-in" component={SignIn} />
       <Route path="/sign-up" component={SignUp} />
-      <Route path="/profile/:id" component={Profile} />
+      <Route path="/user/:id" component={Profile} />
     </BrowserRouter>
   );
 };

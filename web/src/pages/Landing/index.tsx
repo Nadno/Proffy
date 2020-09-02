@@ -39,7 +39,7 @@ const Landing = () => {
             <>
               <Avatar
                 avatar="https://avatars0.githubusercontent.com/u/62628261?s=460&u=8e53dd470fb29af34da48cbb698284eb3cf19032&v=4"
-                link="/"
+                link={`/user/${AuthProvider.user.account.id}`}
               />
               <SignOutButton />
             </>

@@ -11,29 +11,20 @@ import "./styles.css";
 export interface PageHeaderProps {
   title: string;
   description?: string;
-  avatar?: string;
-  user_id?: number;
+  pageTitle?: string;
 }
 
 const PageHeader: React.FC<PageHeaderProps> = ({
-  children, title, description, avatar = "", user_id,
+  children, pageTitle, title, description, 
 }) => {
   return (
-    <header className="page-header">
+    <header id="page-header">
       <div className="top-bar-container">
         <Link to="/">
           <img src={backIcon} alt="Voltar" />
         </Link>
-        <section className="logo-and-profile">
-          <article className="profile">
-            {
-              avatar.length > 0 
-                && 
-              <Avatar avatar={avatar} link={`/profile/${user_id}`} />
-            }
-          </article>
-          <img src={logoImg} alt="Proffy" />
-        </section>
+        <span>{ pageTitle }</span>
+        <img src={logoImg} alt="Proffy" />
       </div>
 
       <div className="header-content">

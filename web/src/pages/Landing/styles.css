@@ -4,15 +4,15 @@
   background-color: var(--color-primary);
 }
 
-header,
-.intro {
+#page-landing header,
+#page-landing .intro {
   width: 100vw;
   max-width: 1200px;
   margin: 0 auto;
   margin-bottom: 3rem;
 }
 
-header {
+#page-landing header {
   height: 8rem;
   display: flex;
   justify-content: space-between;

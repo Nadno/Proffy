@@ -4,8 +4,6 @@ import { Teacher } from "../../Utils/interfaces";
 import { apiGet } from "../../services/api";
 import getSave, { getIds } from "../../Utils/storage";
 
-import { UserContext } from "../../store";
-
 import PageHeader from "../../components/PageHeader";
 import TeacherItem from "../../components/TeacherItem";
 import Input from "../../components/Input";
@@ -18,7 +16,6 @@ const CLASSES_FOR_PAGE = 5;
 export const FAVORITES = "Favorites";
 
 const TeacherList = () => {
-  const AuthProvider = useContext(UserContext);
 
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -65,10 +62,9 @@ const TeacherList = () => {
   return (
     <div id="page-teacher-list" className="container">
       <PageHeader
+        pageTitle="Estudar"
         title="Estes são os proffys disponíveis."
         description=""
-        avatar={AuthProvider?.user.account ? AuthProvider?.user.account.avatar : ""}
-        user_id={AuthProvider?.user.account ? AuthProvider?.user.account.id : 0}
       >
         <form id="search-teachers" onSubmit={searchTeacher}>
           <Select

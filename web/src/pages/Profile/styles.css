@@ -1,0 +1,25 @@
+#page-profile {
+  width: 100vw;
+}
+
+#page-profile main {
+  position: relative;
+  width: 100%;
+  max-width: 74rem;
+  margin: -3.2rem auto 3.2rem;
+  padding-top: 6.4rem;
+  
+  overflow: hidden;
+  border-radius: 0.8rem;
+  background-color: var(--color-box-base);
+  
+  top: -32px;
+}
+
+#page-profile form {
+  padding: 2rem;
+}
+
+#page-profile fieldset {
+  border: none;
+}

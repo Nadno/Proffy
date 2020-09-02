@@ -85,10 +85,9 @@ const TeacherForm = () => {
   return (
     <div id="page-teacher-form" className="container">
       <PageHeader
+        pageTitle="Dar aulas"
         title="Que incrível que você quer dar aulas."
         description="O primeiro passo é preencher esse formulário de inscrição"
-        avatar={AuthProvider?.user.account.avatar}
-        user_id={AuthProvider?.user.account.id}
       />
 
       <main>
