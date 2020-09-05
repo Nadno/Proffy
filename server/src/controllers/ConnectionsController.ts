@@ -1,12 +1,14 @@
-import { Request, Response, request, response } from "express";
+import { Request, Response } from "express";
 import db from "../database/connection";
+
+import response from "../Utils/returnResponse";
 
 export default class ConnectionsController {
   async index(req: Request, res: Response) {
     const totalConnections = await db("connections").count("* as total");
     const { total } = totalConnections[0];
 
-    return res.json({ total });
+    return response(res, 200, { total });
   }
 
   async create(req: Request, res: Response) {
@@ -16,6 +18,6 @@ export default class ConnectionsController {
       user_id,
     });
 
-    return res.status(201).send();
+    return response(res, 201, {});
   }
 }

@@ -1,4 +1,4 @@
-import React, { useState, FormEvent, useContext } from "react";
+import React, { useState, FormEvent, useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 
 import { UserContext } from "../../store";
@@ -12,61 +12,25 @@ import Select from "../../components/Select";
 import LoginRedirect from "../../components/LoginRedirect";
 import AvailableTimes from "../../components/Pattern/AvailableTimes";
 
-import warningIcon from "../../assets/images/icons/warning.svg";
-
 import "./styles.css";
+import ClassForm from "../../components/Pattern/ClassForm";
 
 const TeacherForm = () => {
   const AuthProvider = useContext(UserContext);
   const history = useHistory();
+  const [data, setData] = useState({});
 
-  const [subject, setSubject] = useState("Português");
-  const [cost, setCost] = useState("");
-
-  const [scheduleItems, setScheduleItems] = useState([
-    { week_day: 0, from: "", to: "" },
-  ]);
-
-  const addNewScheduleItem = () => {
-    if (scheduleItems.length === 7) return;
-
-    setScheduleItems([
-      ...scheduleItems,
-      {
-        week_day: 0,
-        from: "",
-        to: "",
-      },
-    ]);
-  };
-
-  const setScheduleItemValue = (
-    position: number,
-    field: string,
-    value: string
-  ) => {
-    const updatedScheduleItems = scheduleItems.map((scheduleItem, index) => {
-      if (index === position) {
-        return { ...scheduleItem, [field]: value };
-      }
-
-      return scheduleItem;
-    });
-
-    setScheduleItems(updatedScheduleItems);
-  };
+  useEffect(() => console.log(data), [data]);
 
   const handleCreateClass = async (e: FormEvent) => {
     e.preventDefault();
     const user_id = AuthProvider?.user ? AuthProvider?.user.account.id : 0;
 
     if (user_id === 0) return null;
-    const data = {
+    setData({
+      ...data,
       user_id,
-      subject,
-      cost: Number(cost),
-      schedule: scheduleItems,
-    };
+    });
 
     const itsOk = await verifyExpireToken();
     if (!itsOk) return SignOut();
@@ -91,50 +55,10 @@ const TeacherForm = () => {
       />
 
       <main>
-        <form onSubmit={handleCreateClass}>
-          <fieldset>
-            <legend>Sobre a aula</legend>
-            <Select
-              name="subject"
-              label="Matéria"
-              value={subject}
-              onChange={(e) => setSubject(e.target.value)}
-              options={[
-                { value: "Artes", label: "Artes" },
-                { value: "Biologia", label: "Biologia" },
-                { value: "Ciências", label: "Ciências" },
-                { value: "Educação física", label: "Educação física" },
-                { value: "Física", label: "Física" },
-                { value: "Química", label: "Química" },
-                { value: "Matemática", label: "Matemática" },
-                { value: "Português", label: "Português" },
-              ]}
-            />
-
-            <Input
-              name="cost"
-              label="Custo da sua hora por aula"
-              value={cost}
-              onChange={(e) => setCost(e.target.value)}
-            />
-          </fieldset>
-
-          <AvailableTimes
-            scheduleItems={scheduleItems}
-            addNewScheduleItem={addNewScheduleItem}
-            setScheduleItemValue={setScheduleItemValue}
-          />
-
-          <footer>
-            <p>
-              <img src={warningIcon} alt="Aviso importante" />
-              Importante! <br />
-              Preencha todos os dados
-            </p>
-
-            <button type="submit">Salvar cadastro</button>
-          </footer>
-        </form>
+        <ClassForm 
+          Submit={handleCreateClass}
+          setData={setData}
+        />
       </main>
     </div>
   );

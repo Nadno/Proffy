@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, FormEvent } from "react";
 import { UserContext } from "../../store";
 
 import { apiGet } from "../../services/api";
@@ -7,12 +7,11 @@ import handlingFormResponse from "../../Utils/handlingResponses";
 
 import PageHeader from "../../components/PageHeader";
 import Avatar from "../../components/Avatar";
-import Input from "../../components/Input";
-import Textarea from "../../components/Textarea";
-import Select from "../../components/Select";
-import AvailableTimes from "../../components/Pattern/AvailableTimes";
+import ClassForm from "../../components/Pattern/ClassForm";
 
 import "./styles.css";
+import Textarea from "../../components/Textarea";
+import Input from "../../components/Input";
 
 const Profile = () => {
   const AuthProvider = useContext(UserContext);
@@ -25,9 +24,8 @@ const Profile = () => {
     name: "",
     whatsapp: "",
   });
-  const [scheduleItems, setScheduleItems] = useState([
-    { week_day: 0, from: "", to: "" },
-  ]);
+
+  const [data, setData] = useState({});
 
   const getUsers = async () => {
     const id = AuthProvider?.user.account.id;
@@ -49,45 +47,47 @@ const Profile = () => {
     console.log(AuthProvider);
   }, [AuthProvider]);
 
-  useEffect(() => console.log(scheduleItems), [scheduleItems]);
+  useEffect(() => console.log(data), [data]);
 
-  const addNewScheduleItem = () => {
-    if (scheduleItems.length === 7) return;
 
-    setScheduleItems([
-      ...scheduleItems,
-      {
-        week_day: 0,
-        from: "",
-        to: "",
-      },
-    ]);
-  };
+  const handleUpdateProfile = (e: FormEvent) => {
 
-  const setScheduleItemValue = (
-    position: number,
-    field: string,
-    value: string
-  ) => {
-    const updatedScheduleItems = scheduleItems.map((scheduleItem, index) => {
-      if (index === position) {
-        return { ...scheduleItem, [field]: value };
-      }
-
-      return scheduleItem;
-    });
-
-    setScheduleItems(updatedScheduleItems);
-  };
+  }
 
   return (
     <div id="page-profile">
-      <PageHeader title="">
-        {account.id && <Avatar avatar={account?.avatar} link="#" />}
+      <PageHeader pageTitle="Seu Perfil" title="">
+        {account.id &&
+        <Avatar
+          avatar={account?.avatar}
+          link="#"
+        />}
       </PageHeader>
 
       <main>
-        <form>
+      <ClassForm
+          Submit={handleUpdateProfile}
+          setData={setData}
+      >
+        <fieldset>
+            <legend>
+              <strong>Seus Dados</strong>
+            </legend>
+
+            <div className="input-blocks-container">
+              <Input name="name" label="Nome" />
+              <Input name="last_name" label="Sobrenome" />
+            </div>
+            
+            <div className="input-blocks-container">
+              <Input name="email" label="E-mail" />
+              <Input name="whatsapp" label="whatsapp" />
+            </div>
+
+            <Textarea name="bio" label="Biografia" />
+          </fieldset>
+      </ClassForm>
+        {/* <form className="form">
           <fieldset>
             <legend>
               <h1>Seus Dados</h1>
@@ -97,7 +97,7 @@ const Profile = () => {
               <Input name="name" label="Nome" />
               <Input name="last_name" label="Sobrenome" />
             </div>
-
+            
             <div className="input-blocks-container">
               <Input name="email" label="E-mail" />
               <Input name="whatsapp" label="whatsapp" />
@@ -109,6 +109,7 @@ const Profile = () => {
           <fieldset>
             <legend>
               <h1>Sobre a aula</h1>
+            </legend>
               <Select
                 name="subject"
                 label="Matéria"
@@ -123,7 +124,6 @@ const Profile = () => {
                   { value: "Português", label: "Português" },
                 ]}
               />
-            </legend>
           </fieldset>
 
           <AvailableTimes
@@ -131,7 +131,7 @@ const Profile = () => {
             addNewScheduleItem={addNewScheduleItem}
             setScheduleItemValue={setScheduleItemValue}
           />
-        </form>
+        </form> */}
       </main>
     </div>
   );

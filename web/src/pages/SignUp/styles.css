@@ -66,11 +66,11 @@
     grid-template-areas: "form logo";
   }
 
-  #logo-container {
+  #page-sign-up #logo-container {
     grid-area: logo;
   }
 
-  .form-container {
+  #page-sign-up .form-container {
     grid-area: form;
   }
 }

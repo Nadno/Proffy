@@ -18,7 +18,7 @@ const AvailableTimes: React.FC<HoursProps> = ({
 }) => {
   return (
     <fieldset id="available-times">
-      <legend>
+      <legend className="new-schedule">
         Horários disponíveis
         <button type="button" onClick={() => addNewScheduleItem()}>
           + Novo horário

@@ -1,8 +1,12 @@
 import { Request, Response } from "express";
 import db from "../database/connection";
-
-import convertHourToMinutes from "../Utils/convertHourToMinutes";
 import { QueryBuilder } from "knex";
+
+import response from "../Utils/returnResponse";
+import convertHourToMinutes from "../Utils/convertHourToMinutes";
+
+import bcrypt from "bcrypt";
+import verifyAccount from "../Utils/verifyAccount";
 
 export interface ScheduleItem {
   week_day: number;
@@ -20,7 +24,7 @@ export default class ClassesController {
     const time = filters.time as string;
 
     if (!week_day || !subject || !time) {
-      return res.status(400).json({
+      return response(res, 200, {
         message: "Missing filters to search classes",
       });
     }
@@ -57,7 +61,7 @@ export default class ClassesController {
         "classes.*"
       );
 
-    return res.json({
+    return response(res, 200, {
       classes,
       count: count["count(*)"],
     });
@@ -73,7 +77,6 @@ export default class ClassesController {
     });
 
     const class_id = insertedClassesIds[0];
-
     const classSchedule = schedule.map((scheduleItem: ScheduleItem) => {
       return {
         week_day: scheduleItem.week_day,
@@ -85,6 +88,49 @@ export default class ClassesController {
 
     await db("class_schedule").insert(classSchedule);
 
-    return res.json({ class_id });
+    return response(res, 200, { class_id });
   }
-}
+
+  async update(req: Request, res: Response) {
+    const { email, password, subject } = req.body;
+    const SELECT = ["password", "id"];
+
+    const verify = await verifyAccount(res, SELECT, { email, password });
+    if (!verify.ok)
+      return response(res, 400, { message: verify.ERRO_IN_ACCOUNT });
+
+    try {
+      await db("classes")
+        .update({
+          subject,
+        })
+        .where("user_id", "=", verify.account[0].id);
+
+      return response(res, 200, { message: "success!" });
+    } catch (err) {
+      return response(res, 400, {
+        message: "Ocorreu um erro inesperado, por favor tente mais tarde!",
+      });
+    }
+  }
+
+  async delete_schedule(req: Request, res: Response) {
+    const { email, password, from, to } = req.body;
+    const SELECT = ["password"];
+    //TÁ ERRADO TEM QUE PEGAR O ID DA CLASSE TAMBÉM É ISSO!
+    const verify = await verifyAccount(res, SELECT, { email, password });
+    if (!verify.ok)
+      return response(res, 400, { message: verify.ERRO_IN_ACCOUNT });
+
+    try {
+      const teste = db("class_schedule")
+        .delete()
+        .where("from", "=", from)
+        .where("to", "=", to);
+
+      console.log(teste);
+    } catch (err) {
+      console.log(err);
+    };
+  };
+};

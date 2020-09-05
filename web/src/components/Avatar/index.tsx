@@ -3,12 +3,14 @@ import { Link } from "react-router-dom";
 
 import "./styles.css";
 
-interface IAvatarProps {
+interface AvatarProps {
   avatar: string;
   link: string;
+  name?: string;
+  subject?: string;
 }
 
-const Avatar: React.FC<IAvatarProps> = ({ avatar, link }) => {
+const Avatar: React.FC<AvatarProps> = ({ avatar, link, name, subject }) => {
   return (
     <article id="avatar">
       <Link to={link}>

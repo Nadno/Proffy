@@ -2,8 +2,9 @@
 
 import { Request, Response, NextFunction } from "express";
 
-import { verifyJwt, getTokenFromHeaders } from "../Utils/jwt";
 import { IDecoded } from "../controllers/UsersController";
+import { verifyJwt, getTokenFromHeaders } from "../Utils/jwt";
+import response from "../Utils/returnResponse";
 
 const checkJwt = (req: Request, res: Response, next: NextFunction) => {
   const { url: path } = req;
@@ -16,17 +17,10 @@ const checkJwt = (req: Request, res: Response, next: NextFunction) => {
     "/connections",
   ];
   const isExcluded = !!excludePaths.find((p) => path.includes(p));
-
   if (isExcluded) return next();
-  const unauthorized = (message: string) =>
-    res.status(401).json({
-      ok: false,
-      status: 401,
-      message: message,
-    });
 
   let token = getTokenFromHeaders(req.headers);
-  if (!token) return unauthorized("token invalido!");
+  if (!token) return response(res, 401, { message: "token invalido!" });
 
   try {
     const decoded = <IDecoded>verifyJwt(token);
@@ -37,7 +31,7 @@ const checkJwt = (req: Request, res: Response, next: NextFunction) => {
 
     next();
   } catch (err) {
-    return unauthorized("token invalido!");
+    return response(res, 401, { message: "token invalido!" });
   }
 };
 

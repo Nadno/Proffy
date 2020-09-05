@@ -35,6 +35,7 @@
 }
 
 .teacher-item footer {
+  width: 100%;
   padding: 3.2rem 2rem;
   background-color: var(--color-box-footer);
   border-top: 1px solid var(--color-line-in-white);
@@ -50,7 +51,11 @@
   display: block;
 }
 
-.buttons-container .fav {
+.teacher-item .buttons-container {
+  display: flex;
+}
+
+.teacher-item .buttons-container .fav {
   width: 5.2rem;
   border: 0;
   border-radius: 0.6rem;
@@ -62,15 +67,15 @@
   cursor: pointer;
 }
 
-.buttons-container .fav img {
+.teacher-item .buttons-container .fav img {
   height: 60%;
 }
 
-.buttons-container .fav:hover {
+.teacher-item .buttons-container .fav:hover {
   background-color: var(--color-primary-dark);
 }
 
-.teacher-item footer .buttons-container a {
+.teacher-item .buttons-container a {
   width: 20rem;
   height: 5.6rem;
   background-color: var(--color-secundary);

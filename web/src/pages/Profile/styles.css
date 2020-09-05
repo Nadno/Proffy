@@ -2,8 +2,17 @@
   width: 100vw;
 }
 
+#page-profile #avatar {
+  display: flex;
+  justify-content: center;
+}
+
+#page-profile #avatar img {
+  height: 10rem;
+  width: 10rem;
+}
+
 #page-profile main {
-  position: relative;
   width: 100%;
   max-width: 74rem;
   margin: -3.2rem auto 3.2rem;
@@ -16,10 +25,8 @@
   top: -32px;
 }
 
-#page-profile form {
-  padding: 2rem;
-}
-
-#page-profile fieldset {
-  border: none;
+@media (min-width: 700px) {
+  #page-profile main {
+    position: relative;
+  }
 }

@@ -20,28 +20,28 @@
   padding: 0 6rem;
 }
 
-.logo-container {
+#page-landing .logo-container {
   height: 20%;
   text-align: center;
   margin: 3.2rem;
 }
 
-.logo-container h2 {
+#page-landing .logo-container h2 {
   font-weight: 500;
   font-size: 2.4rem;
   line-height: 3.4rem;
 }
 
-.logo-container img {
+#page-landing .logo-container img {
   width: 90%;
   height: 100%;
 }
 
-.hero-image {
+#page-landing .hero-image {
   width: 100%;
 }
 
-footer {
+#page-landing footer {
   width: 100vw;
   padding: 0 0.6rem;
   padding-top: 1.8rem;
@@ -52,14 +52,14 @@ footer {
   align-items: center;
 }
 
-.welcome {
+#page-landing .welcome {
   color: var(--color-text-base);
   font-size: 1.8rem;
   line-height: 1.8rem;
   text-align: center;
 }
 
-.options-container {
+#page-landing .options-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -67,14 +67,14 @@ footer {
   margin-top: 2rem;
 }
 
-.buttons-container {
+#page-landing .buttons-container {
   width: 90vw;
   display: flex;
   justify-content: center;
   margin: 1.6rem 0;
 }
 
-.buttons-container a {
+#page-landing .buttons-container a {
   width: 100%;
   height: 8rem;
   max-width: 500px;
@@ -91,38 +91,38 @@ footer {
   transition: background-color 0.2s;
 }
 
-.buttons-container a:first-child {
+#page-landing .buttons-container a:first-child {
   margin-right: 1.6rem;
 }
 
-.buttons-container a img {
+#page-landing .buttons-container a img {
   width: 4rem;
 }
 
-.buttons-container a.study {
+#page-landing .buttons-container a.study {
   background-color: var(--color-primary-lighter);
 }
-.buttons-container a.give-classes {
+#page-landing .buttons-container a.give-classes {
   background-color: var(--color-secundary);
 }
 
-.buttons-container a.study:hover {
+#page-landing .buttons-container a.study:hover {
   background-color: var(--color-primary-light);
 }
-.buttons-container a.give-classes:hover {
+#page-landing .buttons-container a.give-classes:hover {
   background-color: var(--color-secundary-dark);
 }
 
-.total-connections {
+#page-landing .total-connections {
   font-size: 1.4rem;
   color: var(--color-text-base);
 }
 
-.total-connections img {
+#page-landing .total-connections img {
   margin-left: 1rem;
 }
 
-.buttons-container a img {
+#page-landing .buttons-container a img {
   margin-right: 2.4rem;
 }
 
@@ -131,60 +131,60 @@ footer {
     max-width: 1100px;
   }
 
-  .intro {
+  #page-landing .intro {
     padding: 0 3rem;
     display: flex;
     justify-content: center;
     align-items: center;
   }
 
-  .hero-image {
+  #page-landing .hero-image {
     width: 50%;
   }
   
-  .logo-container {
+  #page-landing .logo-container {
     height: 40%;
   }
 
-  .logo-container h2 {
+  #page-landing .logo-container h2 {
     width: 100%;
     max-width: 300px;
     text-align: left;
     font-size: 2.6rem;
   }
 
-  .logo-container img {
+  #page-landing .logo-container img {
     width: 100%;
     height: 100%;
     align-self: start;
   }
 
-  footer {
+  #page-landing footer {
     height: 16rem;
     flex-direction: row;
     justify-content: space-between;
     padding: 0 6rem;
   }
 
-  .welcome {
+  #page-landing .welcome {
     text-align: left;
   }
 
-  .options-container {
+  #page-landing .options-container {
     flex-direction: row;
   }
 
-  .buttons-container {
+  #page-landing .buttons-container {
     justify-content: flex-start;
     max-width: 440px;
   }
 
-  .buttons-container a {
+  #page-landing.buttons-container a {
     font-size: 2.4rem;
     width: 60%;
   }
 
-  .total-connections {
+  #page-landing .total-connections {
     max-width: 200px;
     height: 40%;
     text-align: right;

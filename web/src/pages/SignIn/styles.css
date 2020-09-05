@@ -1,4 +1,4 @@
-#page-sign {
+#page-sign-in {
   width: 100vw;
   height: 100vh;
 }
@@ -87,9 +87,6 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-areas: "logo form";
-  }
-
-  #paga-sign-in .form-container {
   }
 
   #page-sign-in form {
