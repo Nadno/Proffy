@@ -9,6 +9,7 @@ import {
   verifyRefreshJwt,
   getTokenFromHeaders,
 } from "../Utils/jwt";
+
 import response from "../Utils/returnResponse";
 import verifyAccount from "../Utils/verifyAccount";
 
@@ -28,6 +29,11 @@ const ACCOUNT = [
   "bio",
   "jwtVersion",
 ];
+const STATUS_CODE_OK = 200;
+const STATUS_CODE_BAD_REQUEST = 400;
+const STATUS_CODE_UNAUTHORIZED = 401;
+const STATUS_CODE_SERVER_ERROR = 500;
+
 const INVALID_TOKEN = "Token invalido!";
 
 export default class UsersController {
@@ -41,7 +47,7 @@ export default class UsersController {
       .where("users.email", "=", email);
 
     if (emailAlreadyExists.length > 0) {
-      return res.status(400).json({
+      return response(res, STATUS_CODE_BAD_REQUEST, {
         message: "Esse email já está cadastrado!",
       });
     }
@@ -66,7 +72,7 @@ export default class UsersController {
       version: newAccount.jwtVersion,
     });
 
-    return res.json({
+    return response(res, STATUS_CODE_OK, {
       account,
       token,
       refreshToken,
@@ -79,13 +85,13 @@ export default class UsersController {
     try {
       const user = await db("users").select(ACCOUNT).where("id", "=", id);
       if (user.length === 0)
-        return res.json({
+        return response(res, STATUS_CODE_BAD_REQUEST, {
           message: "Este usuário não existe!",
         });
 
-      return res.json(user[0]);
+      return response(res, STATUS_CODE_OK, { user: user[0] });
     } catch (err) {
-      return res.status(500).json({
+      return response(res, STATUS_CODE_SERVER_ERROR, {
         message: "Ocorreu um erro inesperado!",
       });
     }
@@ -93,10 +99,17 @@ export default class UsersController {
 
   async signIn(req: Request, res: Response) {
     const { email, password } = req.body;
+    const SELECT = ["password", "id"];
 
     const dbAccount = await db("users")
       .select(ACCOUNT)
       .where("email", "=", email);
+
+    const verify = await verifyAccount(SELECT, { email, password });
+    if (!verify.ok)
+      return response(res, STATUS_CODE_BAD_REQUEST, {
+        message: verify.ERRO_IN_ACCOUNT,
+      });
 
     const account = dbAccount[0];
     const token = generateJwt({ id: account.id });
@@ -105,8 +118,7 @@ export default class UsersController {
       version: account.jwtVersion,
     });
 
-    return res.json({
-      status: 200,
+    return response(res, STATUS_CODE_OK, {
       account,
       token,
       refreshToken,
@@ -114,11 +126,14 @@ export default class UsersController {
   }
 
   async update(req: Request, res: Response) {
-    const { email, password, avatar, whatsapp, name, bio } = req.body; 
+    const { email, password, avatar, whatsapp, name, bio } = req.body;
     const SELECT = ["password"];
 
-    const verify = await verifyAccount(res, SELECT, { email, password });
-    if (!verify.ok) return response(res, 400, { message: verify.ERRO_IN_ACCOUNT });
+    const verify = await verifyAccount(SELECT, { email, password });
+    if (!verify.ok)
+      return response(res, STATUS_CODE_BAD_REQUEST, {
+        message: verify.ERRO_IN_ACCOUNT,
+      });
 
     try {
       await db("users").where("users.email", "=", email).update({
@@ -128,21 +143,24 @@ export default class UsersController {
         bio,
       });
 
-      return response(res, 200, {
+      return response(res, STATUS_CODE_OK, {
         message: "Dados atualizados com sucesso!",
       });
     } catch (err) {
-      return response(res, 500, {
+      return response(res, STATUS_CODE_SERVER_ERROR, {
         message:
           "Não foi possível atualizar seus dados! Tente novamente mais tarde.",
       });
     }
-  };
+  }
 
   async refresh(req: Request, res: Response) {
     const token = getTokenFromHeaders(req.headers);
 
-    if (!token) return response(res, 401, { message: INVALID_TOKEN });
+    if (!token)
+      return response(res, STATUS_CODE_UNAUTHORIZED, {
+        message: INVALID_TOKEN,
+      });
 
     try {
       const decoded = <IDecoded>verifyRefreshJwt(token);
@@ -151,16 +169,23 @@ export default class UsersController {
         .where("id", "=", decoded.id);
       const account = dbAccount[0];
 
-      if (!account) return response(res, 401, { message: INVALID_TOKEN });
+      if (!account)
+        return response(res, STATUS_CODE_UNAUTHORIZED, {
+          message: INVALID_TOKEN,
+        });
       if (decoded.version !== account.jwtVersion)
-        return response(res, 401, { message: INVALID_TOKEN });
+        return response(res, STATUS_CODE_UNAUTHORIZED, {
+          message: INVALID_TOKEN,
+        });
       const meta = {
         token: generateJwt({ id: account.id }),
       };
-      console.log("***Refresh!");
+    
       return res.json(meta);
     } catch (err) {
-      return response(res, 401, { message: INVALID_TOKEN });
+      return response(res, STATUS_CODE_UNAUTHORIZED, {
+        message: INVALID_TOKEN,
+      });
     }
   }
 }

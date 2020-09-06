@@ -13,13 +13,13 @@ const refreshTokenPrivateKey = String(process.env.JWT_REFRESH_TOKEN_PRIVATE_KEY)
 const options = { expiresIn: '30 minutes' };
 const refreshOptions = { expiresIn: '30 days' };
 
-interface IPayload {
+interface Payload {
   id: number,
   version?: number,
 }
 
-const generateJwt = (payload: IPayload) => jwt.sign(payload, tokenPrivateKey, options);
-const generateRefreshJwt = (payload: IPayload) => jwt.sign(payload, refreshTokenPrivateKey, refreshOptions);
+const generateJwt = (payload: Payload) => jwt.sign(payload, tokenPrivateKey, options);
+const generateRefreshJwt = (payload: Payload) => jwt.sign(payload, refreshTokenPrivateKey, refreshOptions);
 
 
 const verifyJwt = (token: string) => jwt.verify(token, tokenPrivateKey);

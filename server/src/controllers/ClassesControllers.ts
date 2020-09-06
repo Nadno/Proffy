@@ -14,6 +14,9 @@ export interface ScheduleItem {
   to: string;
 }
 
+const STATUS_CODE_OK = 200;
+const STATUS_CODE_BAD_REQUEST = 400;
+
 export default class ClassesController {
   async index(req: Request, res: Response) {
     const { page = 1 } = req.query;
@@ -23,30 +26,29 @@ export default class ClassesController {
     const subject = filters.subject as string;
     const time = filters.time as string;
 
-    if (!week_day || !subject || !time) {
-      return response(res, 200, {
+    if (!week_day || !subject || !time)
+      return response(res, STATUS_CODE_OK, {
         message: "Missing filters to search classes",
       });
-    }
 
     const timeInMinutes = convertHourToMinutes(time);
 
-    function ClassSchedule(this: QueryBuilder) {
+    function searchClassSchedule(this: QueryBuilder) {
       this.select("class_schedule.*")
         .from("class_schedule")
         .whereRaw("`class_schedule`.`class_id` = `classes`.`id`")
         .whereRaw("`class_schedule`.`week_day` = ??", [Number(week_day)])
         .whereRaw("`class_schedule`.`from` <= ??", [timeInMinutes])
         .whereRaw("`class_schedule`.`to` > ??", [timeInMinutes]);
-    };
+    }
 
     const [count] = await db("classes")
-      .whereExists(ClassSchedule)
+      .whereExists(searchClassSchedule)
       .where("classes.subject", "=", subject)
       .join("users", "classes.user_id", "=", "users.id")
       .count();
     const classes = await db("classes")
-      .whereExists(ClassSchedule)
+      .whereExists(searchClassSchedule)
       .where("classes.subject", "=", subject)
       .join("users", "classes.user_id", "=", "users.id")
       .limit(5)
@@ -61,7 +63,7 @@ export default class ClassesController {
         "classes.*"
       );
 
-    return response(res, 200, {
+    return response(res, STATUS_CODE_OK, {
       classes,
       count: count["count(*)"],
     });
@@ -88,49 +90,95 @@ export default class ClassesController {
 
     await db("class_schedule").insert(classSchedule);
 
-    return response(res, 200, { class_id });
+    return response(res, STATUS_CODE_OK, { class_id });
   }
 
   async update(req: Request, res: Response) {
-    const { email, password, subject } = req.body;
+    const { email, password, subject, cost } = req.body;
     const SELECT = ["password", "id"];
 
-    const verify = await verifyAccount(res, SELECT, { email, password });
+    const verify = await verifyAccount(SELECT, { email, password });
     if (!verify.ok)
-      return response(res, 400, { message: verify.ERRO_IN_ACCOUNT });
+      return response(res, STATUS_CODE_BAD_REQUEST, {
+        message: verify.ERRO_IN_ACCOUNT,
+      });
 
     try {
       await db("classes")
         .update({
           subject,
+          cost,
         })
         .where("user_id", "=", verify.account[0].id);
 
-      return response(res, 200, { message: "success!" });
+      return response(res, STATUS_CODE_OK, { message: "success!" });
     } catch (err) {
-      return response(res, 400, {
+      return response(res, STATUS_CODE_BAD_REQUEST, {
         message: "Ocorreu um erro inesperado, por favor tente mais tarde!",
       });
     }
   }
 
   async delete_schedule(req: Request, res: Response) {
-    const { email, password, from, to } = req.body;
-    const SELECT = ["password"];
-    //TÁ ERRADO TEM QUE PEGAR O ID DA CLASSE TAMBÉM É ISSO!
-    const verify = await verifyAccount(res, SELECT, { email, password });
+    const { email, password } = req.body;
+    const SELECT = ["password", "id"];
+
+    const verify = await verifyAccount(SELECT, { email, password });
     if (!verify.ok)
-      return response(res, 400, { message: verify.ERRO_IN_ACCOUNT });
+      return response(res, STATUS_CODE_BAD_REQUEST, {
+        message: verify.ERRO_IN_ACCOUNT,
+      });
+    const filters = req.query;
+
+    const DELETE_ERROR = "Ocorreu um erro ao deletar o horário!";
+
+    const week_day = filters.week_day as string;
+    const subject = filters.subject as string;
+    const time = filters.time as string;
+
+    if (!week_day || !subject || !time)
+      return response(res, STATUS_CODE_OK, {
+        message: DELETE_ERROR,
+      });
+
+    const timeInMinutes = convertHourToMinutes(time);
+    function searchClassSchedule(this: QueryBuilder) {
+      this.select("class_schedule.*")
+        .from("class_schedule")
+        .whereRaw("`class_schedule`.`class_id` = `classes`.`id`")
+        .whereRaw("`class_schedule`.`week_day` = ??", [Number(week_day)])
+        .whereRaw("`class_schedule`.`from` <= ??", [timeInMinutes])
+        .whereRaw("`class_schedule`.`to` > ??", [timeInMinutes]);
+    }
+    const DELETE_SUCCESS = "Horário deletado!";
 
     try {
-      const teste = db("class_schedule")
-        .delete()
-        .where("from", "=", from)
-        .where("to", "=", to);
+      const classId = await db("classes")
+        .where("classes.user_id", "=", verify.account[0].id)
+        .whereExists(searchClassSchedule)
+        .select("id");
+      const [count] = await db("classes")
+        .where("classes.user_id", "=", verify.account[0].id)
+        .whereExists(searchClassSchedule)
+        .count();
 
-      console.log(teste);
+      if (count["count(*)"] === 1) {
+        await db("classes")
+          .where("classes.user_id", "=", verify.account[0].id)
+          .whereExists(searchClassSchedule)
+          .where("classes.subject", "=", subject)
+          .delete();
+      };
+
+      await db("class_schedule")
+        .where("class_schedule.class_id", "=", classId[0].id)
+        .delete("*");
+
+      return response(res, STATUS_CODE_OK, { message: DELETE_SUCCESS });
     } catch (err) {
-      console.log(err);
-    };
-  };
-};
+      return response(res, STATUS_CODE_OK, {
+        message: DELETE_ERROR,
+      });
+    }
+  }
+}
