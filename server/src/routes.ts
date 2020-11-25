@@ -20,8 +20,6 @@ routes.post("/refresh", usersControllers.refresh);
 
 routes.get("/classes/list", classesControllers.index);
 routes.post("/classes/create", classesControllers.create);
-routes.put("/classes/update", classesControllers.update);
-routes.delete("/classes/schedule/delete", classesControllers.delete_schedule);
 
 routes.get("/connections", connectionsControllers.index);
 routes.post("/connections", connectionsControllers.create);

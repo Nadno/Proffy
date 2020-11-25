@@ -5,9 +5,6 @@ import { QueryBuilder } from "knex";
 import response from "../Utils/returnResponse";
 import convertHourToMinutes from "../Utils/convertHourToMinutes";
 
-import bcrypt from "bcrypt";
-import verifyAccount from "../Utils/verifyAccount";
-
 export interface ScheduleItem {
   week_day: number;
   from: string;
@@ -15,7 +12,6 @@ export interface ScheduleItem {
 }
 
 const STATUS_CODE_OK = 200;
-const STATUS_CODE_BAD_REQUEST = 400;
 
 export default class ClassesController {
   async index(req: Request, res: Response) {
@@ -93,92 +89,4 @@ export default class ClassesController {
     return response(res, STATUS_CODE_OK, { class_id });
   }
 
-  async update(req: Request, res: Response) {
-    const { email, password, subject, cost } = req.body;
-    const SELECT = ["password", "id"];
-
-    const verify = await verifyAccount(SELECT, { email, password });
-    if (!verify.ok)
-      return response(res, STATUS_CODE_BAD_REQUEST, {
-        message: verify.ERRO_IN_ACCOUNT,
-      });
-
-    try {
-      await db("classes")
-        .update({
-          subject,
-          cost,
-        })
-        .where("user_id", "=", verify.account[0].id);
-
-      return response(res, STATUS_CODE_OK, { message: "success!" });
-    } catch (err) {
-      return response(res, STATUS_CODE_BAD_REQUEST, {
-        message: "Ocorreu um erro inesperado, por favor tente mais tarde!",
-      });
-    }
-  }
-
-  async delete_schedule(req: Request, res: Response) {
-    const { email, password } = req.body;
-    const SELECT = ["password", "id"];
-
-    const verify = await verifyAccount(SELECT, { email, password });
-    if (!verify.ok)
-      return response(res, STATUS_CODE_BAD_REQUEST, {
-        message: verify.ERRO_IN_ACCOUNT,
-      });
-    const filters = req.query;
-
-    const DELETE_ERROR = "Ocorreu um erro ao deletar o horário!";
-
-    const week_day = filters.week_day as string;
-    const subject = filters.subject as string;
-    const time = filters.time as string;
-
-    if (!week_day || !subject || !time)
-      return response(res, STATUS_CODE_OK, {
-        message: DELETE_ERROR,
-      });
-
-    const timeInMinutes = convertHourToMinutes(time);
-    function searchClassSchedule(this: QueryBuilder) {
-      this.select("class_schedule.*")
-        .from("class_schedule")
-        .whereRaw("`class_schedule`.`class_id` = `classes`.`id`")
-        .whereRaw("`class_schedule`.`week_day` = ??", [Number(week_day)])
-        .whereRaw("`class_schedule`.`from` <= ??", [timeInMinutes])
-        .whereRaw("`class_schedule`.`to` > ??", [timeInMinutes]);
-    }
-    const DELETE_SUCCESS = "Horário deletado!";
-
-    try {
-      const classId = await db("classes")
-        .where("classes.user_id", "=", verify.account[0].id)
-        .whereExists(searchClassSchedule)
-        .select("id");
-      const [count] = await db("classes")
-        .where("classes.user_id", "=", verify.account[0].id)
-        .whereExists(searchClassSchedule)
-        .count();
-
-      if (count["count(*)"] === 1) {
-        await db("classes")
-          .where("classes.user_id", "=", verify.account[0].id)
-          .whereExists(searchClassSchedule)
-          .where("classes.subject", "=", subject)
-          .delete();
-      };
-
-      await db("class_schedule")
-        .where("class_schedule.class_id", "=", classId[0].id)
-        .delete("*");
-
-      return response(res, STATUS_CODE_OK, { message: DELETE_SUCCESS });
-    } catch (err) {
-      return response(res, STATUS_CODE_OK, {
-        message: DELETE_ERROR,
-      });
-    }
-  }
 }
