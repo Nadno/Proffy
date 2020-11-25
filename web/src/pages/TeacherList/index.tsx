@@ -1,4 +1,4 @@
-import React, { useState, FormEvent, useContext } from "react";
+import React, { useState, FormEvent } from "react";
 import { Teacher } from "../../Utils/interfaces";
 
 import { apiGet } from "../../services/api";
@@ -8,17 +8,12 @@ import PageHeader from "../../components/PageHeader";
 import TeacherItem from "../../components/TeacherItem";
 import Input from "../../components/Input";
 import Select from "../../components/Select";
-import Pagination from "../../components/Pagination";
 
 import "./styles.css";
 
-const CLASSES_FOR_PAGE = 5;
 export const FAVORITES = "Favorites";
 
 const TeacherList = () => {
-
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
   const [teachers, setTeachers] = useState([]);
   const [buttonDisabled, setButtonDisabled] = useState(false);
 
@@ -32,12 +27,14 @@ const TeacherList = () => {
       subject,
       week_day,
       time,
-      page,
     };
 
-    const { data } = await apiGet("/classes/list", params);
-    if (data.classes) setTeachers(data.classes);
-    if (data.count) setTotalPages(data.count / CLASSES_FOR_PAGE);
+    try {
+      const { data } = await apiGet("/classes/list", params);
+      if (data.classes) setTeachers(data.classes);
+    } catch {
+      alert("Ocorreu um erro durante a busca, por favor tente mais tarde!");
+    }
   };
 
   const searchFavoriteOnStorage = (id: number) => {
@@ -93,8 +90,8 @@ const TeacherList = () => {
               { value: "0", label: "Domingo" },
               { value: "1", label: "Segunda-feira" },
               { value: "2", label: "Terça-feira" },
-              { value: "4", label: "Quarta-feira" },
-              { value: "3 física", label: "Quinta-feira" },
+              { value: "3", label: "Quarta-feira" },
+              { value: "4", label: "Quinta-feira" },
               { value: "5", label: "Sexta-feira" },
               { value: "6", label: "Sábado" },
             ]}
@@ -126,7 +123,6 @@ const TeacherList = () => {
                 />
               );
             })}
-            <Pagination page={page} totalPages={totalPages} setPage={setPage} />
           </>
         ) : null}
       </main>

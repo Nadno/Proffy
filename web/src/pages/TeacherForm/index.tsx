@@ -1,4 +1,4 @@
-import React, { useState, FormEvent, useContext, useEffect } from "react";
+import React, { useState, FormEvent, useContext } from "react";
 import { useHistory } from "react-router-dom";
 
 import { UserContext } from "../../store";
@@ -7,10 +7,7 @@ import verifyExpireToken from "../../Utils/refreshToken";
 
 import SignOut from "../../components/SignOut";
 import PageHeader from "../../components/PageHeader";
-import Input from "../../components/Input";
-import Select from "../../components/Select";
 import LoginRedirect from "../../components/LoginRedirect";
-import AvailableTimes from "../../components/Pattern/AvailableTimes";
 
 import "./styles.css";
 import ClassForm from "../../components/Pattern/ClassForm";
@@ -19,8 +16,6 @@ const TeacherForm = () => {
   const AuthProvider = useContext(UserContext);
   const history = useHistory();
   const [data, setData] = useState({});
-
-  useEffect(() => console.log(data), [data]);
 
   const handleCreateClass = async (e: FormEvent) => {
     e.preventDefault();
@@ -35,13 +30,15 @@ const TeacherForm = () => {
     const itsOk = await verifyExpireToken();
     if (!itsOk) return SignOut();
 
-    await apiPost("classes/create", data)
+    try {
+      await apiPost("classes/create", data)
       .then(() => {
-        console.log("Cadastro realizado com sucesso!");
-
+        alert("Cadastro realizado com sucesso!");
         history.push("/");
-      })
-      .catch(() => console.log("Erro ao cadastrar aula!"));
+      });
+    } catch {
+      alert("Não foi possível criar a aula no momento, por favor tente mais tarde!");
+    }
   };
 
   if (AuthProvider?.user.account.id === 0) return <LoginRedirect />;

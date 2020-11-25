@@ -33,7 +33,7 @@ const SignUp = () => {
     try {
       await apiPost('/users/sign-up', account);
       history.push('/sign-in');
-    } catch (err) {
+    } catch {
       alert('Não foi possível criar sua conta!');
     }
   };

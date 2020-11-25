@@ -6,7 +6,6 @@ import TeacherList from "./pages/TeacherList";
 import TeacherForm from "./pages/TeacherForm";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
-import Profile from "./pages/Profile";
 
 const Routes = () => {
   return (
@@ -16,7 +15,6 @@ const Routes = () => {
       <Route path="/give-classes" component={TeacherForm} />
       <Route path="/sign-in" component={SignIn} />
       <Route path="/sign-up" component={SignUp} />
-      <Route path="/user/:id" component={Profile} />
     </BrowserRouter>
   );
 };

@@ -26,9 +26,7 @@ const Landing = () => {
   useEffect(() => {
     apiGet("/connections").then((response) =>
       setTotalConnections(response.data.total)
-    ).catch(() => {
-      console.error("Falha ao se conectar com o servidor!")
-    });
+    );
   }, []);
 
   return (

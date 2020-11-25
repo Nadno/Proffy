@@ -10,7 +10,7 @@ interface AvatarProps {
   subject?: string;
 }
 
-const Avatar: React.FC<AvatarProps> = ({ avatar, link, name, subject }) => {
+const Avatar: React.FC<AvatarProps> = ({ avatar, link, }) => {
   return (
     <article id="avatar">
       <Link to={link}>
