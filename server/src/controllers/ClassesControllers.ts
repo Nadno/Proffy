@@ -47,8 +47,6 @@ export default class ClassesController {
       .whereExists(searchClassSchedule)
       .where("classes.subject", "=", subject)
       .join("users", "classes.user_id", "=", "users.id")
-      .limit(5)
-      .offset((Number(page) - 1) * 5)
       .select(
         "users.name",
         "users.email",
@@ -57,7 +55,10 @@ export default class ClassesController {
         "users.bio",
         "users.jwtVersion",
         "classes.*"
-      );
+      )
+      .limit(5)
+      .offset((Number(page) - 1) * 5);
+    console.log("***timeInMinutes: ", timeInMinutes);
 
     return response(res, STATUS_CODE_OK, {
       classes,
@@ -88,5 +89,4 @@ export default class ClassesController {
 
     return response(res, STATUS_CODE_OK, { class_id });
   }
-
 }

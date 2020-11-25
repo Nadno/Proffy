@@ -37,7 +37,8 @@ const STATUS_CODE_SERVER_ERROR = 500;
 const INVALID_TOKEN = "Token invalido!";
 
 export default class UsersController {
-  async create(req: Request, res: Response) {
+  async signUp(req: Request, res: Response) {
+    console.log("***OI");
     const { email, password, name, avatar, whatsapp, bio } = req.body;
 
     const hash = bcrypt.hashSync(password, 10);
@@ -123,35 +124,6 @@ export default class UsersController {
       token,
       refreshToken,
     });
-  }
-
-  async update(req: Request, res: Response) {
-    const { email, password, avatar, whatsapp, name, bio } = req.body;
-    const SELECT = ["password"];
-
-    const verify = await verifyAccount(SELECT, { email, password });
-    if (!verify.ok)
-      return response(res, STATUS_CODE_BAD_REQUEST, {
-        message: verify.ERRO_IN_ACCOUNT,
-      });
-
-    try {
-      await db("users").where("users.email", "=", email).update({
-        avatar,
-        whatsapp,
-        name,
-        bio,
-      });
-
-      return response(res, STATUS_CODE_OK, {
-        message: "Dados atualizados com sucesso!",
-      });
-    } catch (err) {
-      return response(res, STATUS_CODE_SERVER_ERROR, {
-        message:
-          "Não foi possível atualizar seus dados! Tente novamente mais tarde.",
-      });
-    }
   }
 
   async refresh(req: Request, res: Response) {

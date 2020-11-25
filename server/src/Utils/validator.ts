@@ -36,9 +36,7 @@ const accountSingUp = (req: Request, res: Response, next: NextFunction) => {
     password,
     password_confirmation,
     name,
-    avatar,
     whatsapp,
-    bio,
   } = req.body;
 
   const schema = Joi.object({
@@ -46,15 +44,13 @@ const accountSingUp = (req: Request, res: Response, next: NextFunction) => {
     password: rules.password,
     password_confirmation: Joi.string().valid(Joi.ref('password')).required(),
     name: Joi.string().required(),
-    avatar: Joi.string(),
-    bio: Joi,
     whatsapp: Joi.string().pattern(
       new RegExp(/^([0-9]{2})([9]{1})?([0-9]{4})([0-9]{4})$/)
     ),
   });
 
   const { error } = schema.validate({ 
-    email, password, password_confirmation, name, avatar, whatsapp, bio 
+    email, password, password_confirmation, name, whatsapp, 
   }, options);
 
   if (error) {
